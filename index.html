@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProAvenir | Connecting Cameroonian Youth & SMEs</title>
+  <!-- Google Fonts & Font Awesome for clean icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e9edf2 100%);
+      color: #1a2c3e;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1.8rem 2rem;
+    }
+
+    /* Navbar styles - fixed backdrop-filter for Safari */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 1rem 2rem;
+      border-radius: 2rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #0b5e7e, #1e88a8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .logo span {
+      color: #f39c12;
+      background: none;
+      -webkit-background-clip: unset;
+      background-clip: unset;
+    }
+
+    .role-badge {
+      background: linear-gradient(135deg, #eef2f5, #e3e8ed);
+      padding: 0.5rem 1.2rem;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.02), 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 0.8rem;
+    }
+
+    .btn {
+      padding: 0.7rem 1.6rem;
+      border-radius: 2rem;
+      border: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background: white;
+      border: 1px solid #cbd5e1;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0f5c7a, #1e88a8);
+      border: none;
+      color: white;
+      box-shadow: 0 4px 12px rgba(15,92,122,0.3);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(15,92,122,0.4);
+    }
+    
+    .btn-outline {
+      border: 2px solid #0f5c7a;
+      color: #0f5c7a;
+      background: transparent;
+    }
+    
+    .btn-outline:hover {
+      background: #0f5c7a;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .dashboard {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .card-panel {
+      background: white;
+      border-radius: 2rem;
+      padding: 2rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .card-panel:hover {
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.12);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 1.8rem;
+      border-bottom: 3px solid #eef2f8;
+      padding-bottom: 1rem;
+    }
+    
+    .panel-header h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #1f3e48, #0f5c7a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+      background: linear-gradient(135deg, #f9fbfd, #f0f4f8);
+      padding: 1rem 1.5rem;
+      border-radius: 3rem;
+    }
+    
+    .filter-bar label {
+      font-weight: 600;
+      color: #2c5a6e;
+    }
+    
+    select, input, textarea {
+      padding: 0.7rem 1.2rem;
+      border-radius: 2rem;
+      border: 2px solid #e2e8f0;
+      font-family: 'Inter', sans-serif;
+      background: white;
+      outline: none;
+      transition: all 0.2s;
+      font-size: 0.9rem;
+    }
+    
+    select:focus, input:focus, textarea:focus {
+      border-color: #1e88a8;
+      box-shadow: 0 0 0 3px rgba(30,136,168,0.1);
+    }
+
+    .job-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.8rem;
+    }
+    
+    .job-card {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      transition: all 0.3s;
+      border: 1px solid #eef2f8;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .job-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #0f5c7a, #1e88a8);
+    }
+    
+    .job-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 30px rgba(0,0,0,0.1);
+    }
+    
+    .job-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #0b4f6c;
+      margin-bottom: 0.5rem;
+    }
+    
+    .company-name {
+      font-weight: 600;
+      color: #3a6b82;
+      margin: 0.3rem 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .job-location {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      background: linear-gradient(135deg, #eef2f8, #e8edf2);
+      padding: 0.3rem 1rem;
+      border-radius: 30px;
+      margin: 0.8rem 0;
+      font-weight: 500;
+    }
+    
+    .job-desc {
+      font-size: 0.9rem;
+      color: #4a6272;
+      margin: 1rem 0;
+      line-height: 1.5;
+    }
+    
+    .apply-status {
+      margin-top: 1rem;
+      padding: 0.5rem 0;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #1e88a8;
+      border-top: 1px solid #eef2f8;
+    }
+    
+    hr {
+      margin: 1rem 0;
+      border: none;
+      border-top: 1px solid #eef2f8;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #2c5a6e;
+    }
+    
+    .form-group input, .form-group textarea {
+      width: 100%;
+      border-radius: 1rem;
+    }
+    
+    .error-msg {
+      color: #e74c3c;
+      font-size: 0.8rem;
+      margin-top: 0.4rem;
+      font-weight: 500;
+    }
+
+    /* Toast notification - fixed for all browsers */
+    .toast-notify {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: linear-gradient(135deg, #1e2a36, #2c3e50);
+      color: white;
+      padding: 1rem 1.8rem;
+      border-radius: 3rem;
+      font-weight: 600;
+      z-index: 1000;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      animation: slideIn 0.3s ease-out;
+    }
+    
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem;
+      color: #8ba3b5;
+      font-size: 1.1rem;
+    }
+    
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding: 2rem;
+      font-size: 0.85rem;
+      color: #8ba3b5;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 1rem; }
+      .navbar { flex-direction: column; align-items: stretch; }
+      .btn-group { justify-content: center; }
+      .panel-header { flex-direction: column; gap: 1rem; align-items: stretch; }
+      .filter-bar { flex-direction: column; align-items: stretch; }
+      .job-grid { grid-template-columns: 1fr; }
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.8rem;
+      background: #e8f4f8;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #0f5c7a;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="navbar">
+    <div class="logo">
+      <i class="fas fa-briefcase" style="color: #0f5c7a;"></i>
+      Pro<span>Avenir</span>
+    </div>
+    <div class="role-badge">
+      <i class="fas fa-user-circle"></i> 
+      <span id="activeRoleLabel">Student View</span>
+    </div>
+    <div class="btn-group">
+      <button id="studentRoleBtn" class="btn btn-outline"><i class="fas fa-graduation-cap"></i> Student</button>
+      <button id="recruiterRoleBtn" class="btn btn-primary"><i class="fas fa-building"></i> Recruiter</button>
+    </div>
+  </div>
+
+  <div class="dashboard">
+    <!-- Student Panel -->
+    <div id="studentPanel" class="card-panel">
+      <div class="panel-header">
+        <h2><i class="fas fa-search-location"></i> Internships & Jobs near you</h2>
+        <div class="filter-bar">
+          <i class="fas fa-map-marker-alt" style="color: #0f5c7a;"></i>
+          <label for="regionFilterSelect">Filter by Region:</label>
+          <select id="regionFilterSelect">
+            <option value="all">🌍 All Regions</option>
+            <option value="Yaoundé">📌 Yaoundé</option>
+            <option value="Douala">⚓ Douala</option>
+            <option value="Nairobi">🌍 Nairobi</option>
+            <option value="Lagos">🏙️ Lagos</option>
+            <option value="Paris">🗼 Paris</option>
+            <option value="Remote">💻 Remote</option>
+            <option value="Central Africa">🌴 Central Africa</option>
+            <option value="West Africa">🌊 West Africa</option>
+          </select>
+        </div>
+      </div>
+      <div id="jobCardsContainer" class="job-grid">
+        <div class="empty-state">
+          <i class="fas fa-spinner fa-pulse"></i>
+          <p>Loading opportunities...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recruiter Panel -->
+    <div id="recruiterPanel" class="card-panel" style="display: none;">
+      <div class="panel-header">
+        <h2><i class="fas fa-plus-circle"></i> Post a new job / internship</h2>
+        <span class="badge"><i class="fas fa-rocket"></i> Quick & Easy</span>
+      </div>
+      <form id="jobPostForm">
+        <div class="form-group">
+          <label><i class="fas fa-heading"></i> Job Title *</label>
+          <input type="text" id="jobTitle" placeholder="e.g., Frontend Developer Intern" />
+          <div class="error-msg" id="titleError"></div>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-building"></i> Company Name *</label>
+          <input type="text" id="companyName" placeholder="e.g., TechCorp Africa" />
+          <div class="error-msg" id="companyError"></div>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-map-marker-alt"></i> Location * (Region / City)</label>
+          <input type="text" id="jobLocation" placeholder="e.g., Yaoundé, Douala, Remote" />
+          <div class="error-msg" id="locationError"></div>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-file-alt"></i> Requirements / Description *</label>
+          <textarea rows="4" id="jobDesc" placeholder="Describe the mission, required skills, experience..."></textarea>
+          <div class="error-msg" id="descError"></div>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-briefcase"></i> Job Type (optional)</label>
+          <input type="text" id="jobType" placeholder="Internship / Full-Time / Part-Time / Contract" />
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: auto; padding: 0.8rem 2rem;">
+          <i class="fas fa-paper-plane"></i> Publish Listing
+        </button>
+      </form>
+      <div id="postMessage" style="margin-top: 1.5rem; font-size: 0.9rem;"></div>
+    </div>
+  </div>
+  <footer>
+    <i class="fas fa-database"></i> ProAvenir · Connecting Cameroonian youth with SMEs · Real-time job matching
+  </footer>
+</div>
+
+<script>
+  // Mock Database
+  const companiesDb = [
+    { company_id: 1, company_name: "TechCorp Africa", headquarters: "Yaoundé", website: "https://techcorp.cm" },
+    { company_id: 2, company_name: "FinServe Ltd", headquarters: "Douala", website: "https://finserve.cm" },
+    { company_id: 3, company_name: "GlobalSoft", headquarters: "Paris", website: "https://globalsoft.io" },
+    { company_id: 4, company_name: "Cameroon Digital Hub", headquarters: "Yaoundé", website: "https://cdh.cm" },
+    { company_id: 5, company_name: "Entrepreneurs Without Borders", headquarters: "Douala", website: "#" }
+  ];
+
+  let jobListings = [
+    { job_id: 101, company_id: 1, companyName: "TechCorp Africa", title: "Software Engineer Intern", description: "Build web apps with React & Java, mentorship provided. Great opportunity for fresh graduates!", location: "Yaoundé", job_type: "Internship", posted_at: "2025-02-10", is_active: true },
+    { job_id: 102, company_id: 1, companyName: "TechCorp Africa", title: "Data Analyst Intern", description: "Analyze business data, create dashboards. SQL knowledge a plus. Training provided.", location: "Douala", job_type: "Internship", posted_at: "2025-02-15", is_active: true },
+    { job_id: 103, company_id: 2, companyName: "FinServe Ltd", title: "Junior Financial Analyst", description: "Support financial planning, strong Excel skills required. Great career growth.", location: "Douala", job_type: "Full-Time", posted_at: "2025-02-01", is_active: true },
+    { job_id: 104, company_id: 3, companyName: "GlobalSoft", title: "UX Designer (Contract)", description: "Design user interfaces for global products. Remote work available.", location: "Remote", job_type: "Contract", posted_at: "2025-02-05", is_active: true },
+    { job_id: 105, company_id: 4, companyName: "Cameroon Digital Hub", title: "Frontend Developer Intern", description: "Work on real projects: HTML/CSS/JS, great learning environment with mentors.", location: "Yaoundé", job_type: "Internship", posted_at: "2025-02-18", is_active: true },
+    { job_id: 106, company_id: 5, companyName: "Entrepreneurs Without Borders", title: "Marketing & Communication Intern", description: "Assist social media & community events. Great for communication graduates.", location: "Douala", job_type: "Internship", posted_at: "2025-02-12", is_active: true },
+    { job_id: 107, company_id: 2, companyName: "FinServe Ltd", title: "Risk Management Trainee", description: "Learn risk assessment and compliance. Full training provided.", location: "Central Africa", job_type: "Internship", posted_at: "2025-02-14", is_active: true },
+    { job_id: 108, company_id: 3, companyName: "GlobalSoft", title: "Cloud Support Engineer", description: "AWS & Azure support, remote-friendly position. Experience with cloud platforms preferred.", location: "Remote", job_type: "Full-Time", posted_at: "2025-02-09", is_active: true }
+  ];
+
+  let nextJobId = 200;
+
+  function escapeHtml(str) {
+    if (!str) return "";
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
+  }
+
+  function renderStudentFeed(regionFilter) {
+    const container = document.getElementById("jobCardsContainer");
+    if (!container) return;
+    
+    let filteredJobs = jobListings.filter(function(job) { return job.is_active === true; });
+    
+    if (regionFilter !== "all") {
+      filteredJobs = filteredJobs.filter(function(job) {
+        return job.location.toLowerCase().includes(regionFilter.toLowerCase());
+      });
+    }
+    
+    if (filteredJobs.length === 0) {
+      container.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><p>No opportunities found in ' + (regionFilter === "all" ? "your region" : regionFilter) + '.</p><small>Try adjusting your filter</small></div>';
+      return;
+    }
+    
+    container.innerHTML = filteredJobs.map(function(job) {
+      return '<div class="job-card">' +
+        '<div class="job-title">' + escapeHtml(job.title) + '</div>' +
+        '<div class="company-name"><i class="fas fa-building"></i> ' + escapeHtml(job.companyName) + '</div>' +
+        '<div class="job-location"><i class="fas fa-map-marker-alt"></i> ' + escapeHtml(job.location) + '</div>' +
+        '<div class="job-desc">' + (job.description.length > 120 ? escapeHtml(job.description.substring(0, 120)) + "..." : escapeHtml(job.description)) + '</div>' +
+        '<div><span class="badge">' + job.job_type + '</span></div>' +
+        '<div class="apply-status"><i class="fas fa-check-circle" style="color:#2ecc71;"></i> Status: Open • Apply Now</div>' +
+        '<hr /><div style="font-size:0.75rem; color:#3b7a95;"><i class="far fa-calendar-alt"></i> Posted: ' + new Date(job.posted_at).toLocaleDateString() + '</div>' +
+        '</div>';
+    }).join("");
+  }
+
+  function showFieldError(elementId, message) {
+    const errDiv = document.getElementById(elementId);
+    if (errDiv) errDiv.innerText = message;
+  }
+
+  function clearFormErrors() {
+    var errorIds = ["titleError", "companyError", "locationError", "descError"];
+    for (var i = 0; i < errorIds.length; i++) {
+      var el = document.getElementById(errorIds[i]);
+      if (el) el.innerText = "";
+    }
+    var msgDiv = document.getElementById("postMessage");
+    if (msgDiv) msgDiv.innerHTML = "";
+  }
+
+  function showToast(msg, bgColor) {
+    bgColor = bgColor || "#1e2a36";
+    var toast = document.querySelector(".toast-notify");
+    if (toast) toast.remove();
+    var newToast = document.createElement("div");
+    newToast.className = "toast-notify";
+    newToast.innerHTML = '<i class="fas fa-bell"></i> ' + msg;
+    newToast.style.backgroundColor = bgColor;
+    document.body.appendChild(newToast);
+    setTimeout(function() { 
+      if(newToast && newToast.remove) newToast.remove(); 
+    }, 3000);
+  }
+
+  function studentPanelVisible() {
+    var studentPanel = document.getElementById("studentPanel");
+    return studentPanel && studentPanel.style.display !== "none";
+  }
+
+  function postNewJob(event) {
+    event.preventDefault();
+    clearFormErrors();
+    
+    var titleInput = document.getElementById("jobTitle");
+    var companyInput = document.getElementById("companyName");
+    var locationInput = document.getElementById("jobLocation");
+    var descInput = document.getElementById("jobDesc");
+    var jobTypeInput = document.getElementById("jobType");
+    
+    var isValid = true;
+    var title = titleInput.value.trim();
+    var company = companyInput.value.trim();
+    var locationVal = locationInput.value.trim();
+    var desc = descInput.value.trim();
+    var jobType = jobTypeInput.value.trim() || "Internship";
+    
+    if (!title) { showFieldError("titleError", "❌ Job title is required"); isValid = false; }
+    if (!company) { showFieldError("companyError", "❌ Company name is required"); isValid = false; }
+    if (!locationVal) { showFieldError("locationError", "❌ Location is required"); isValid = false; }
+    if (!desc) { showFieldError("descError", "❌ Description/requirements are required"); isValid = false; }
+    
+    if (!isValid) {
+      showToast("Please fill in all required fields (*)", "#e74c3c");
+      return;
+    }
+    
+    var existingCompany = null;
+    for (var i = 0; i < companiesDb.length; i++) {
+      if (companiesDb[i].company_name.toLowerCase() === company.toLowerCase()) {
+        existingCompany = companiesDb[i];
+        break;
+      }
+    }
+    
+    var companyId;
+    if (existingCompany) {
+      companyId = existingCompany.company_id;
+    } else {
+      var newId = companiesDb.length + 10;
+      companiesDb.push({ company_id: newId, company_name: company, headquarters: locationVal, website: "" });
+      companyId = newId;
+    }
+    
+    var newJob = {
+      job_id: nextJobId++,
+      company_id: companyId,
+      companyName: company,
+      title: title,
+      description: desc,
+      location: locationVal,
+      job_type: jobType,
+      posted_at: new Date().toISOString().split('T')[0],
+      is_active: true
+    };
+    
+    jobListings.unshift(newJob);
+    
+    titleInput.value = "";
+    companyInput.value = "";
+    locationInput.value = "";
+    descInput.value = "";
+    jobTypeInput.value = "";
+    
+    var msgDiv = document.getElementById("postMessage");
+    if (msgDiv) msgDiv.innerHTML = '<span style="color:#27ae60;"><i class="fas fa-check-circle"></i> ✅ Job posted successfully! It now appears in the student feed.</span>';
+    showToast("🎉 Job listing published! Students can now see it.", "#27ae60");
+    
+    var regionSelect = document.getElementById("regionFilterSelect");
+    if (regionSelect && studentPanelVisible()) {
+      renderStudentFeed(regionSelect.value);
+    }
+  }
+
+  function setRole(role) {
+    var studentPanel = document.getElementById("studentPanel");
+    var recruiterPanel = document.getElementById("recruiterPanel");
+    var roleLabelSpan = document.getElementById("activeRoleLabel");
+    
+    if (role === "student") {
+      studentPanel.style.display = "block";
+      recruiterPanel.style.display = "none";
+      if (roleLabelSpan) roleLabelSpan.innerHTML = "👩‍🎓 Student View | Finding opportunities";
+      var filterSelect = document.getElementById("regionFilterSelect");
+      if (filterSelect) renderStudentFeed(filterSelect.value);
+    } else {
+      studentPanel.style.display = "none";
+      recruiterPanel.style.display = "block";
+      if (roleLabelSpan) roleLabelSpan.innerHTML = "🏢 Recruiter View | Post jobs";
+      clearFormErrors();
+    }
+  }
+
+  function init() {
+    var studentBtn = document.getElementById("studentRoleBtn");
+    var recruiterBtn = document.getElementById("recruiterRoleBtn");
+    var regionSelect = document.getElementById("regionFilterSelect");
+    var postForm = document.getElementById("jobPostForm");
+    
+    if (studentBtn) {
+      studentBtn.addEventListener("click", function() { setRole("student"); });
+    }
+    if (recruiterBtn) {
+      recruiterBtn.addEventListener("click", function() { setRole("recruiter"); });
+    }
+    if (regionSelect) {
+      regionSelect.addEventListener("change", function(e) {
+        var currentRoleElem = document.getElementById("studentPanel");
+        if (currentRoleElem && currentRoleElem.style.display !== "none") {
+          renderStudentFeed(e.target.value);
+        }
+      });
+    }
+    if (postForm) {
+      postForm.addEventListener("submit", postNewJob);
+    }
+    
+    renderStudentFeed("all");
+    setRole("student");
+  }
+  
+  init();
+</script>
+</body>
+</html>
