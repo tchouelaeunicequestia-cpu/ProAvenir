@@ -38,7 +38,7 @@ function renderStudentFeed(regionFilter) {
   }
   
   if (filteredJobs.length === 0) {
-    let message = '<div class="empty-state" role="status" aria-live="polite"><i class="fas fa-search" aria-hidden="true"></i>';
+    let message = '<div class="empty-state" aria-live="polite"><i class="fas fa-search" aria-hidden="true"></i>';
     
     if (currentSearchKeyword && regionFilter !== "all") {
       message += '<p>No jobs found matching "<strong>' + escapeHtml(currentSearchKeyword) + '</strong>" in <strong>' + regionFilter + '</strong>.</p>';
@@ -137,7 +137,7 @@ function postNewJob(event) {
   jobTypeInput.value = "";
   
   var msgDiv = document.getElementById("postMessage");
-  if (msgDiv) msgDiv.innerHTML = '<span style="color:#27ae60;"><i class="fas fa-check-circle" aria-hidden="true"></i> ✅ Job posted successfully!</span>';
+  if (msgDiv) msgDiv.innerHTML = '<span style="color:#27ae60;"><i class="fas fa-check-circle"></i> ✅ Job posted successfully!</span>';
   showToast("🎉 Job listing published!", "#27ae60");
   
   if (currentUserRole === "student") {

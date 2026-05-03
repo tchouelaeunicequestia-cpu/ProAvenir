@@ -31,6 +31,11 @@ document.addEventListener("DOMContentLoaded", function() {
   if (closeModalBtn) {
     closeModalBtn.addEventListener("click", function() {
       forgotModal.style.display = "none";
+      document.getElementById("resetEmail").value = "";
+      document.getElementById("resetEmailError").textContent = "";
+      const resetMessage = document.getElementById("resetMessage");
+      resetMessage.innerHTML = "";
+      resetMessage.className = "reset-message";
     });
   }
   
@@ -38,6 +43,11 @@ document.addEventListener("DOMContentLoaded", function() {
   window.addEventListener("click", function(e) {
     if (e.target === forgotModal) {
       forgotModal.style.display = "none";
+      document.getElementById("resetEmail").value = "";
+      document.getElementById("resetEmailError").textContent = "";
+      const resetMessage = document.getElementById("resetMessage");
+      resetMessage.innerHTML = "";
+      resetMessage.className = "reset-message";
     }
   });
   
@@ -61,9 +71,10 @@ document.addEventListener("DOMContentLoaded", function() {
       const userExists = users.find(u => u.email === email);
       
       if (!userExists) {
-        resetMessage.innerHTML = '<div class="reset-message error">No account found with this email address.</div>';
+        resetMessage.innerHTML = '<div class="reset-message error">❌ No account found with this email address.</div>';
         resetMessage.style.display = "block";
         setTimeout(() => {
+          resetMessage.innerHTML = "";
           resetMessage.style.display = "none";
         }, 3000);
         return;
@@ -73,10 +84,10 @@ document.addEventListener("DOMContentLoaded", function() {
       const token = generateResetToken(email);
       
       // Simulate sending email with reset link
-      const resetLink = sendResetEmail(email, token);
+      sendResetEmail(email, token);
       
       resetMessage.innerHTML = `<div class="reset-message success">
-        <i class="fas fa-envelope"></i> Password reset link has been sent to ${email}<br>
+        <i class="fas fa-envelope"></i> ✅ Password reset link has been sent to ${email}<br>
         <small>The link will expire in 24 hours.</small>
       </div>`;
       resetMessage.style.display = "block";
@@ -84,9 +95,10 @@ document.addEventListener("DOMContentLoaded", function() {
       // Clear form
       document.getElementById("resetEmail").value = "";
       
-      // Close modal after 3 seconds
+      // Close modal after 4 seconds
       setTimeout(() => {
         forgotModal.style.display = "none";
+        resetMessage.innerHTML = "";
         resetMessage.style.display = "none";
       }, 4000);
     });
@@ -203,41 +215,3 @@ document.addEventListener("DOMContentLoaded", function() {
   // Initial render
   renderStudentFeed("all");
 });
-
-// Helper functions for password reset
-function generateResetToken(email) {
-  const token = Math.random().toString(36).substring(2, 15) + 
-                Date.now().toString(36);
-  const expiresAt = Date.now() + (24 * 60 * 60 * 1000); // 24 hours
-  
-  let resetTokens = JSON.parse(localStorage.getItem('resetTokens') || '{}');
-  resetTokens[token] = {
-    email: email,
-    expiresAt: expiresAt,
-    createdAt: Date.now()
-  };
-  
-  localStorage.setItem('resetTokens', JSON.stringify(resetTokens));
-  return token;
-}
-
-function sendResetEmail(email, token) {
-  // Simulate sending email
-  const resetLink = `${window.location.origin}${window.location.pathname.replace(/[^/]*$/, '')}pages/reset-password.html?token=${token}`;
-  
-  console.log('=== PASSWORD RESET EMAIL (SIMULATED) ===');
-  console.log(`To: ${email}`);
-  console.log(`Subject: Reset Your ProAvenir Password`);
-  console.log(`Body: Click the following link to reset your password (valid for 24 hours):\n${resetLink}`);
-  console.log('=======================================');
-  
-  // For demo, show the link in a dialog
-  setTimeout(() => {
-    const userConfirmed = confirm(`A password reset link has been generated for ${email}.\n\nClick OK to open the reset page.\n\nNote: In production, this would be sent to your email inbox.`);
-    if (userConfirmed) {
-      window.open(resetLink, '_blank');
-    }
-  }, 500);
-  
-  return resetLink;
-}
