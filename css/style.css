@@ -325,51 +325,11 @@ body {
   border: 1px solid #f5c6cb;
 }
 
-/* Password Reset Page Styles */
-.reset-container {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #0f5c7a 0%, #1e88a8 100%);
-  padding: 1rem;
-}
-
-.reset-card {
-  background: white;
-  border-radius: 2rem;
-  padding: 2.5rem;
-  max-width: 500px;
-  width: 100%;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-}
-
-.password-requirements {
-  margin-top: 0.5rem;
-  font-size: 0.75rem;
-  color: #6c8a9c;
-}
-
-.password-requirements ul {
-  margin-top: 0.3rem;
-  padding-left: 1.2rem;
-}
-
-.password-requirements li {
-  margin: 0.2rem 0;
-}
-
-.password-requirements li.valid {
-  color: #27ae60;
-  text-decoration: line-through;
-}
-
-/* Main App Styles (existing) */
+/* Main App Styles */
 .main-app {
   display: none;
 }
 
-/* Rest of your existing CSS remains the same */
 .container {
   max-width: 1400px;
   margin: 0 auto;
