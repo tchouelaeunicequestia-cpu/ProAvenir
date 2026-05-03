@@ -199,6 +199,10 @@ body {
   gap: 10px;
 }
 
+.logo i {
+  color: #0f5c7a;
+}
+
 .logo span {
   color: #f39c12;
   background: none;
@@ -247,6 +251,11 @@ body {
   border-radius: 2rem;
   padding: 2rem;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+#recruiterPanel,
+.recruiter-panel-hidden {
+  display: none;
 }
 
 .panel-header {
@@ -474,6 +483,31 @@ select:focus, input:focus, textarea:focus {
 .form-group input, .form-group textarea {
   width: 100%;
   border-radius: 1rem;
+}
+
+.btn {
+  border: none;
+  border-radius: 1rem;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  width: auto;
+  padding: 0.8rem 2rem;
+  background: linear-gradient(135deg, #0f5c7a, #1e88a8);
+  color: white;
+  font-weight: 600;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(15,92,122,0.2);
+}
+
+.post-message {
+  margin-top: 1.5rem;
 }
 
 .error-msg {

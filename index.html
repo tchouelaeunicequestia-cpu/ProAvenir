@@ -55,7 +55,7 @@
     <div class="container">
       <div class="navbar">
         <div class="logo">
-          <i class="fas fa-briefcase" style="color: #0f5c7a;"></i>
+          <i class="fas fa-briefcase"></i>
           Pro<span>Avenir</span>
         </div>
         <div class="user-info">
@@ -79,13 +79,13 @@
             <div class="search-box">
               <i class="fas fa-search"></i>
               <input type="text" id="searchKeyword" placeholder="Search by job title, company, or skills... (e.g., Developer, Java, Marketing)" />
-              <button id="clearSearchBtn" class="clear-search-btn" style="display: none;">
+              <button id="clearSearchBtn" class="clear-search-btn hidden" aria-label="Clear search">
                 <i class="fas fa-times"></i>
               </button>
             </div>
             <div class="filter-box">
               <i class="fas fa-map-marker-alt"></i>
-              <select id="regionFilterSelect">
+              <select id="regionFilterSelect" aria-label="Filter opportunities by region">
                 <option value="all">🌍 All Regions</option>
                 <option value="Yaoundé">📌 Yaoundé</option>
                 <option value="Douala">⚓ Douala</option>
@@ -108,7 +108,7 @@
         </div>
 
         <!-- Recruiter Panel -->
-        <div id="recruiterPanel" class="card-panel" style="display: none;">
+        <div id="recruiterPanel" class="card-panel recruiter-panel-hidden">
           <div class="panel-header">
             <h2><i class="fas fa-plus-circle"></i> Post a new job / internship</h2>
             <span class="badge"><i class="fas fa-rocket"></i> Quick & Easy</span>
@@ -138,11 +138,11 @@
               <label>Job Type (optional)</label>
               <input type="text" id="jobType" placeholder="Internship / Full-Time / Part-Time / Contract" />
             </div>
-            <button type="submit" class="btn btn-primary" style="width: auto; padding: 0.8rem 2rem;">
+            <button type="submit" class="btn btn-primary">
               <i class="fas fa-paper-plane"></i> Publish Listing
             </button>
           </form>
-          <div id="postMessage" style="margin-top: 1.5rem;"></div>
+          <div id="postMessage" class="post-message"></div>
         </div>
       </div>
       <footer>
