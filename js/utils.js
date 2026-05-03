@@ -14,8 +14,6 @@ function highlightText(text, keyword) {
   
   const escapedText = escapeHtml(text);
   const escapedKeyword = escapeHtml(keyword);
-  
-  // Case-insensitive regex for highlighting
   const regex = new RegExp('(' + escapedKeyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
   return escapedText.replace(regex, '<span class="highlight">$1</span>');
 }
@@ -47,6 +45,50 @@ function clearFormErrors() {
   }
   var msgDiv = document.getElementById("postMessage");
   if (msgDiv) msgDiv.innerHTML = "";
+}
+
+// Password validation function
+function validatePasswordStrength(password) {
+  const requirements = {
+    length: password.length >= 8,
+    uppercase: /[A-Z]/.test(password),
+    lowercase: /[a-z]/.test(password),
+    number: /[0-9]/.test(password),
+    special: /[@$!%*?&]/.test(password)
+  };
+  
+  return Object.values(requirements).every(Boolean);
+}
+
+function getPasswordStrength(password) {
+  const checks = [
+    password.length >= 8,
+    /[A-Z]/.test(password),
+    /[a-z]/.test(password),
+    /[0-9]/.test(password),
+    /[@$!%*?&]/.test(password)
+  ];
+  return checks.filter(Boolean).length;
+}
+
+// Generate reset token (simulated email sending)
+function sendResetEmail(email, token) {
+  // In production, this would send an actual email
+  // For demo, we'll simulate and show the reset link
+  const resetLink = `${window.location.origin}/proavenir-project/pages/reset-password.html?token=${token}`;
+  console.log('Reset link (simulated email):', resetLink);
+  
+  // Show the reset link in a modal or toast for demo purposes
+  showToast(`Reset link sent! Check console or use: ${resetLink.substring(0, 50)}...`, "#27ae60");
+  
+  // For demo, open the reset link in a new tab
+  setTimeout(() => {
+    if (confirm(`Reset link generated!\n\nClick OK to open the reset page.\n\nNote: In production, this would be sent to ${email}`)) {
+      window.open(resetLink, '_blank');
+    }
+  }, 500);
+  
+  return resetLink;
 }
 
 function updateActiveFilters() {
@@ -87,7 +129,6 @@ function clearSearch() {
     if (clearBtn) clearBtn.style.display = "none";
     updateActiveFilters();
     
-    // Trigger re-render
     if (typeof renderStudentFeed === 'function') {
       renderStudentFeed(currentRegionFilter);
     }
@@ -101,7 +142,6 @@ function clearRegionFilter() {
     currentRegionFilter = "all";
     updateActiveFilters();
     
-    // Trigger re-render
     if (typeof renderStudentFeed === 'function') {
       renderStudentFeed(currentRegionFilter);
     }
@@ -111,3 +151,4 @@ function clearRegionFilter() {
 // Make functions available globally
 window.clearSearch = clearSearch;
 window.clearRegionFilter = clearRegionFilter;
+window.validatePasswordStrength = validatePasswordStrength;

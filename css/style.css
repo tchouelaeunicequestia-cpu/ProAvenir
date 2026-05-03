@@ -12,6 +12,19 @@ body {
   min-height: 100vh;
 }
 
+/* Accessibility - Visually hidden */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
 /* Login Page Styles */
 .login-container {
   min-height: 100vh;
@@ -93,6 +106,11 @@ body {
   box-shadow: 0 4px 12px rgba(30,136,168,0.2);
 }
 
+.role-option:focus-visible {
+  outline: 3px solid #1e88a8;
+  outline-offset: 2px;
+}
+
 .role-option i {
   font-size: 2rem;
   margin-bottom: 0.5rem;
@@ -135,6 +153,24 @@ body {
   box-shadow: 0 0 0 3px rgba(30,136,168,0.1);
 }
 
+.forgot-password-link {
+  text-align: right;
+  margin-bottom: 1.5rem;
+}
+
+.forgot-link {
+  color: #1e88a8;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.forgot-link:hover {
+  color: #0f5c7a;
+  text-decoration: underline;
+}
+
 .login-btn {
   width: 100%;
   padding: 0.8rem;
@@ -153,6 +189,11 @@ body {
   box-shadow: 0 4px 12px rgba(15,92,122,0.3);
 }
 
+.login-btn:focus-visible {
+  outline: 3px solid #f39c12;
+  outline-offset: 2px;
+}
+
 .demo-credentials {
   margin-top: 1.5rem;
   padding: 1rem;
@@ -162,11 +203,140 @@ body {
   text-align: center;
 }
 
-/* Main App Styles */
+/* Modal Styles */
+.modal {
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background: white;
+  border-radius: 2rem;
+  max-width: 500px;
+  width: 90%;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+  border-bottom: 2px solid #eef2f8;
+}
+
+.modal-header h2 {
+  font-size: 1.5rem;
+  color: #0f5c7a;
+}
+
+.close-modal {
+  font-size: 2rem;
+  cursor: pointer;
+  color: #8ba3b5;
+  transition: all 0.2s;
+}
+
+.close-modal:hover {
+  color: #e74c3c;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.reset-message {
+  margin-top: 1rem;
+  padding: 0.8rem;
+  border-radius: 0.8rem;
+  font-size: 0.85rem;
+  display: none;
+}
+
+.reset-message.success {
+  display: block;
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.reset-message.error {
+  display: block;
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* Password Reset Page Styles */
+.reset-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0f5c7a 0%, #1e88a8 100%);
+  padding: 1rem;
+}
+
+.reset-card {
+  background: white;
+  border-radius: 2rem;
+  padding: 2.5rem;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.password-requirements {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: #6c8a9c;
+}
+
+.password-requirements ul {
+  margin-top: 0.3rem;
+  padding-left: 1.2rem;
+}
+
+.password-requirements li {
+  margin: 0.2rem 0;
+}
+
+.password-requirements li.valid {
+  color: #27ae60;
+  text-decoration: line-through;
+}
+
+/* Main App Styles (existing) */
 .main-app {
   display: none;
 }
 
+/* Rest of your existing CSS remains the same */
 .container {
   max-width: 1400px;
   margin: 0 auto;
@@ -197,10 +367,6 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-}
-
-.logo i {
-  color: #0f5c7a;
 }
 
 .logo span {
@@ -253,11 +419,6 @@ body {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
 }
 
-#recruiterPanel,
-.recruiter-panel-hidden {
-  display: none;
-}
-
 .panel-header {
   display: flex;
   justify-content: space-between;
@@ -277,7 +438,6 @@ body {
   color: transparent;
 }
 
-/* Search and Filter Bar - NEW */
 .search-filter-bar {
   display: flex;
   gap: 1rem;
@@ -331,11 +491,6 @@ body {
   transition: all 0.2s;
 }
 
-.clear-search-btn:hover {
-  color: #e74c3c;
-  background: #f0f0f0;
-}
-
 .filter-box {
   flex: 1;
   display: flex;
@@ -347,18 +502,14 @@ body {
   border: 2px solid #e2e8f0;
 }
 
-.filter-box i {
-  color: #0f5c7a;
-}
-
 .filter-box select {
   border: none;
   background: transparent;
   padding: 0.5rem;
   font-weight: 500;
+  cursor: pointer;
 }
 
-/* Active Filters Display */
 .active-filters {
   display: flex;
   gap: 0.8rem;
@@ -379,28 +530,8 @@ body {
   gap: 0.5rem;
 }
 
-.filter-tag i {
+.filter-tag i:last-child {
   cursor: pointer;
-  font-size: 0.7rem;
-}
-
-.filter-tag i:hover {
-  color: #e74c3c;
-}
-
-select, input, textarea {
-  padding: 0.7rem 1.2rem;
-  border-radius: 2rem;
-  border: 2px solid #e2e8f0;
-  font-family: 'Inter', sans-serif;
-  background: white;
-  outline: none;
-  font-size: 0.9rem;
-}
-
-select:focus, input:focus, textarea:focus {
-  border-color: #1e88a8;
-  box-shadow: 0 0 0 3px rgba(30,136,168,0.1);
 }
 
 .job-grid {
@@ -485,31 +616,6 @@ select:focus, input:focus, textarea:focus {
   border-radius: 1rem;
 }
 
-.btn {
-  border: none;
-  border-radius: 1rem;
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  transition: all 0.2s;
-}
-
-.btn-primary {
-  width: auto;
-  padding: 0.8rem 2rem;
-  background: linear-gradient(135deg, #0f5c7a, #1e88a8);
-  color: white;
-  font-weight: 600;
-}
-
-.btn-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(15,92,122,0.2);
-}
-
-.post-message {
-  margin-top: 1.5rem;
-}
-
 .error-msg {
   color: #e74c3c;
   font-size: 0.8rem;
@@ -538,6 +644,7 @@ select:focus, input:focus, textarea:focus {
   text-align: center;
   padding: 4rem;
   color: #8ba3b5;
+  grid-column: 1 / -1;
 }
 
 .empty-state i {
@@ -552,6 +659,7 @@ footer {
   padding: 2rem;
   font-size: 0.85rem;
   color: #8ba3b5;
+  border-top: 1px solid #e2e8f0;
 }
 
 .highlight {
@@ -570,4 +678,5 @@ footer {
   .search-filter-bar { flex-direction: column; }
   .search-box { width: 100%; }
   .filter-box { width: 100%; }
+  .modal-content { width: 95%; }
 }
