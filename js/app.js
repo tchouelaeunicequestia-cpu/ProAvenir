@@ -15,6 +15,89 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   });
   
+  // Forgot Password Modal
+  const forgotPasswordLink = document.getElementById("forgotPasswordLink");
+  const forgotModal = document.getElementById("forgotPasswordModal");
+  const closeModalBtn = document.getElementById("closeModalBtn");
+  const forgotPasswordForm = document.getElementById("forgotPasswordForm");
+  
+  if (forgotPasswordLink) {
+    forgotPasswordLink.addEventListener("click", function(e) {
+      e.preventDefault();
+      forgotModal.style.display = "flex";
+    });
+  }
+  
+  if (closeModalBtn) {
+    closeModalBtn.addEventListener("click", function() {
+      forgotModal.style.display = "none";
+      document.getElementById("resetEmail").value = "";
+      document.getElementById("resetEmailError").textContent = "";
+      const resetMessage = document.getElementById("resetMessage");
+      resetMessage.innerHTML = "";
+      resetMessage.className = "reset-message";
+    });
+  }
+  
+  // Close modal when clicking outside
+  window.addEventListener("click", function(e) {
+    if (e.target === forgotModal) {
+      forgotModal.style.display = "none";
+      document.getElementById("resetEmail").value = "";
+      document.getElementById("resetEmailError").textContent = "";
+      const resetMessage = document.getElementById("resetMessage");
+      resetMessage.innerHTML = "";
+      resetMessage.className = "reset-message";
+    }
+  });
+  
+  // Handle Forgot Password Form Submission
+  if (forgotPasswordForm) {
+    forgotPasswordForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const email = document.getElementById("resetEmail").value.trim();
+      const emailError = document.getElementById("resetEmailError");
+      const resetMessage = document.getElementById("resetMessage");
+      
+      if (!email) {
+        emailError.textContent = "Please enter your email address";
+        return;
+      }
+      
+      emailError.textContent = "";
+      
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const userExists = users.find(u => u.email === email);
+      
+      if (!userExists) {
+        resetMessage.innerHTML = '<div class="reset-message error">❌ No account found with this email address.</div>';
+        resetMessage.style.display = "block";
+        setTimeout(() => {
+          resetMessage.innerHTML = "";
+          resetMessage.style.display = "none";
+        }, 3000);
+        return;
+      }
+      
+      const token = generateResetToken(email);
+      sendResetEmail(email, token);
+      
+      resetMessage.innerHTML = `<div class="reset-message success">
+        <i class="fas fa-envelope"></i> ✅ Password reset link has been sent to ${email}<br>
+        <small>The link will expire in 24 hours.</small>
+      </div>`;
+      resetMessage.style.display = "block";
+      
+      document.getElementById("resetEmail").value = "";
+      
+      setTimeout(() => {
+        forgotModal.style.display = "none";
+        resetMessage.innerHTML = "";
+        resetMessage.style.display = "none";
+      }, 4000);
+    });
+  }
+  
   // Handle Login
   const loginForm = document.getElementById("loginForm");
   if (loginForm) {
@@ -28,17 +111,38 @@ document.addEventListener("DOMContentLoaded", function() {
         return;
       }
       
-      if (selectedRole === "student") {
-        currentUserRole = "student";
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const user = users.find(u => u.email === email && u.password === password);
+      
+      if (!user) {
+        showToast("Invalid email or password. Please try again.", "#e74c3c");
+        return;
+      }
+      
+      if (user.role !== selectedRole) {
+        showToast(`This account is registered as a ${user.role}. Please select the correct role.`, "#e74c3c");
+        return;
+      }
+      
+      loggedInUser = user;
+      currentUserRole = user.role;
+      
+      if (currentUserRole === "student") {
         setRole("student");
+        // Initialize resume manager for student
+        if (!resumeManager) {
+          resumeManager = new ResumeManager();
+        }
+        resumeManager.setStudentId(user.id);
       } else {
-        currentUserRole = "recruiter";
         setRole("recruiter");
+        // Refresh students list for recruiter
+        refreshStudentsList();
       }
       
       document.getElementById("loginPage").style.display = "none";
       document.getElementById("mainApp").style.display = "block";
-      showToast(`Welcome ${selectedRole === "student" ? "Student" : "Recruiter"}!`, "#27ae60");
+      showToast(`Welcome back, ${user.name || user.email.split('@')[0]}!`, "#27ae60");
     });
   }
   
@@ -51,7 +155,40 @@ document.addEventListener("DOMContentLoaded", function() {
       document.getElementById("loginEmail").value = "";
       document.getElementById("loginPassword").value = "";
       currentUserRole = null;
+      loggedInUser = null;
+      currentSearchKeyword = "";
+      currentRegionFilter = "all";
       showToast("Logged out successfully", "#1e2a36");
+    });
+  }
+  
+  // Search Input Event
+  const searchInput = document.getElementById("searchKeyword");
+  if (searchInput) {
+    let debounceTimer;
+    searchInput.addEventListener("input", function(e) {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(function() {
+        if (currentUserRole === "student") {
+          renderStudentFeed(currentRegionFilter);
+        }
+      }, 300);
+    });
+  }
+  
+  // Clear Search Button
+  const clearSearchBtn = document.getElementById("clearSearchBtn");
+  if (clearSearchBtn) {
+    clearSearchBtn.addEventListener("click", function() {
+      if (searchInput) {
+        searchInput.value = "";
+        currentSearchKeyword = "";
+        clearSearchBtn.style.display = "none";
+        if (currentUserRole === "student") {
+          renderStudentFeed(currentRegionFilter);
+        }
+        showToast("Search cleared", "#1e2a36");
+      }
     });
   }
   
@@ -60,7 +197,8 @@ document.addEventListener("DOMContentLoaded", function() {
   if (regionFilter) {
     regionFilter.addEventListener("change", function(e) {
       if (currentUserRole === "student") {
-        renderStudentFeed(e.target.value);
+        currentRegionFilter = e.target.value;
+        renderStudentFeed(currentRegionFilter);
       }
     });
   }

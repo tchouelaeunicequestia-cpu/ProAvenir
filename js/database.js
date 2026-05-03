@@ -1,4 +1,35 @@
-// Mock Database - Companies
+// Initialize users in localStorage if not exists
+if (!localStorage.getItem('users')) {
+  const defaultUsers = [
+    { 
+      id: 1, 
+      email: "student@example.com", 
+      password: "Student@123", 
+      role: "student",
+      name: "Student User",
+      createdAt: new Date().toISOString()
+    },
+    { 
+      id: 2, 
+      email: "recruiter@example.com", 
+      password: "Recruiter@123", 
+      role: "recruiter",
+      name: "Recruiter User",
+      createdAt: new Date().toISOString()
+    }
+  ];
+  localStorage.setItem('users', JSON.stringify(defaultUsers));
+}
+
+// Initialize reset tokens storage
+if (!localStorage.getItem('resetTokens')) {
+  localStorage.setItem('resetTokens', JSON.stringify({}));
+}
+
+// Get users from localStorage
+let users = JSON.parse(localStorage.getItem('users'));
+
+// Companies Database
 const companiesDb = [
   { company_id: 1, company_name: "TechCorp Africa", headquarters: "Yaoundé", website: "https://techcorp.cm" },
   { company_id: 2, company_name: "FinServe Ltd", headquarters: "Douala", website: "https://finserve.cm" },
@@ -7,7 +38,7 @@ const companiesDb = [
   { company_id: 5, company_name: "Entrepreneurs Without Borders", headquarters: "Douala", website: "#" }
 ];
 
-// Mock Database - Job Listings
+// Job Listings
 let jobListings = [
   { job_id: 101, company_id: 1, companyName: "TechCorp Africa", title: "Software Engineer Intern", description: "Build web apps with React & Java, mentorship provided. Great opportunity for fresh graduates!", location: "Yaoundé", job_type: "Internship", posted_at: "2025-02-10", is_active: true },
   { job_id: 102, company_id: 1, companyName: "TechCorp Africa", title: "Data Analyst Intern", description: "Analyze business data, create dashboards. SQL knowledge a plus. Training provided.", location: "Douala", job_type: "Internship", posted_at: "2025-02-15", is_active: true },
@@ -21,3 +52,45 @@ let jobListings = [
 
 let nextJobId = 200;
 let currentUserRole = null;
+let currentSearchKeyword = "";
+let currentRegionFilter = "all";
+let loggedInUser = null;
+
+// Helper functions for password reset
+function generateResetToken(email) {
+  const token = Math.random().toString(36).substring(2, 15) + 
+                Date.now().toString(36) +
+                Math.random().toString(36).substring(2, 8);
+  const expiresAt = Date.now() + (24 * 60 * 60 * 1000); // 24 hours
+  
+  let resetTokens = JSON.parse(localStorage.getItem('resetTokens') || '{}');
+  resetTokens[token] = {
+    email: email,
+    expiresAt: expiresAt,
+    createdAt: Date.now()
+  };
+  
+  localStorage.setItem('resetTokens', JSON.stringify(resetTokens));
+  return token;
+}
+
+function sendResetEmail(email, token) {
+  // Simulate sending email
+  const resetLink = `${window.location.origin}${window.location.pathname.replace(/[^/]*$/, '')}pages/reset-password.html?token=${token}`;
+  
+  console.log('=== PASSWORD RESET EMAIL (SIMULATED) ===');
+  console.log(`To: ${email}`);
+  console.log(`Subject: Reset Your ProAvenir Password`);
+  console.log(`Body: Click the following link to reset your password (valid for 24 hours):\n${resetLink}`);
+  console.log('=======================================');
+  
+  // For demo, show the link in a dialog
+  setTimeout(() => {
+    const userConfirmed = confirm(`A password reset link has been generated for ${email}.\n\nClick OK to open the reset page.\n\nNote: In production, this would be sent to your email inbox.`);
+    if (userConfirmed) {
+      window.open(resetLink, '_blank');
+    }
+  }, 500);
+  
+  return resetLink;
+}
