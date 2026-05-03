@@ -66,7 +66,6 @@ document.addEventListener("DOMContentLoaded", function() {
       
       emailError.textContent = "";
       
-      // Check if email exists in users database
       const users = JSON.parse(localStorage.getItem('users') || '[]');
       const userExists = users.find(u => u.email === email);
       
@@ -80,10 +79,7 @@ document.addEventListener("DOMContentLoaded", function() {
         return;
       }
       
-      // Generate unique time-sensitive token
       const token = generateResetToken(email);
-      
-      // Simulate sending email with reset link
       sendResetEmail(email, token);
       
       resetMessage.innerHTML = `<div class="reset-message success">
@@ -92,10 +88,8 @@ document.addEventListener("DOMContentLoaded", function() {
       </div>`;
       resetMessage.style.display = "block";
       
-      // Clear form
       document.getElementById("resetEmail").value = "";
       
-      // Close modal after 4 seconds
       setTimeout(() => {
         forgotModal.style.display = "none";
         resetMessage.innerHTML = "";
@@ -117,10 +111,7 @@ document.addEventListener("DOMContentLoaded", function() {
         return;
       }
       
-      // Get users from localStorage
       const users = JSON.parse(localStorage.getItem('users') || '[]');
-      
-      // Find user by email and password
       const user = users.find(u => u.email === email && u.password === password);
       
       if (!user) {
@@ -128,7 +119,6 @@ document.addEventListener("DOMContentLoaded", function() {
         return;
       }
       
-      // Check if selected role matches user role
       if (user.role !== selectedRole) {
         showToast(`This account is registered as a ${user.role}. Please select the correct role.`, "#e74c3c");
         return;
@@ -139,8 +129,15 @@ document.addEventListener("DOMContentLoaded", function() {
       
       if (currentUserRole === "student") {
         setRole("student");
+        // Initialize resume manager for student
+        if (!resumeManager) {
+          resumeManager = new ResumeManager();
+        }
+        resumeManager.setStudentId(user.id);
       } else {
         setRole("recruiter");
+        // Refresh students list for recruiter
+        refreshStudentsList();
       }
       
       document.getElementById("loginPage").style.display = "none";
@@ -165,7 +162,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
   
-  // Search Input Event (live search with debounce)
+  // Search Input Event
   const searchInput = document.getElementById("searchKeyword");
   if (searchInput) {
     let debounceTimer;

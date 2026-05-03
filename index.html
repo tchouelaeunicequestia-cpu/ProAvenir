@@ -101,6 +101,37 @@
             <h2><i class="fas fa-search-location" aria-hidden="true"></i> Internships & Jobs near you</h2>
           </div>
           
+          <!-- Resume Upload Section -->
+          <div class="resume-section" id="resumeSection">
+            <div class="resume-header">
+              <h3><i class="fas fa-file-pdf"></i> My Resume/CV</h3>
+              <p>Upload your resume in PDF format (Max 5MB). Recruiters will be able to view and download it.</p>
+            </div>
+            <div class="resume-upload-area" id="resumeUploadArea">
+              <div class="resume-status" id="resumeStatus">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <span id="resumeFileName">No resume uploaded</span>
+              </div>
+              <div class="resume-actions">
+                <label for="resumeFile" class="btn-upload">
+                  <i class="fas fa-upload"></i> Choose PDF
+                  <input type="file" id="resumeFile" accept=".pdf" style="display: none;">
+                </label>
+                <button id="viewResumeBtn" class="btn-view" style="display: none;" disabled>
+                  <i class="fas fa-eye"></i> View/Download
+                </button>
+                <button id="deleteResumeBtn" class="btn-delete" style="display: none;">
+                  <i class="fas fa-trash"></i> Delete
+                </button>
+              </div>
+              <div id="uploadProgress" class="upload-progress" style="display: none;">
+                <div class="progress-bar"></div>
+                <span>Uploading...</span>
+              </div>
+            </div>
+            <div id="resumeMessage" class="resume-message"></div>
+          </div>
+          
           <div class="search-filter-bar" role="search" aria-label="Job search and filters">
             <div class="search-box">
               <i class="fas fa-search" aria-hidden="true"></i>
@@ -137,6 +168,18 @@
         <!-- Recruiter Panel -->
         <div id="recruiterPanel" class="card-panel" style="display: none;">
           <div class="panel-header">
+            <h2><i class="fas fa-users" aria-hidden="true"></i> Student Applications</h2>
+            <span class="badge"><i class="fas fa-file-pdf"></i> View Resumes</span>
+          </div>
+          
+          <div id="studentsListContainer" class="students-list">
+            <div class="empty-state">
+              <i class="fas fa-users"></i>
+              <p>Loading students...</p>
+            </div>
+          </div>
+          
+          <div class="panel-header" style="margin-top: 2rem;">
             <h2><i class="fas fa-plus-circle" aria-hidden="true"></i> Post a new job / internship</h2>
             <span class="badge"><i class="fas fa-rocket" aria-hidden="true"></i> Quick & Easy</span>
           </div>
@@ -182,5 +225,6 @@
   <script src="js/utils.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/resume.js"></script>
 </body>
 </html>
