@@ -72,9 +72,19 @@
         <div id="studentPanel" class="card-panel">
           <div class="panel-header">
             <h2><i class="fas fa-search-location"></i> Internships & Jobs near you</h2>
-            <div class="filter-bar">
-              <i class="fas fa-map-marker-alt" style="color: #0f5c7a;"></i>
-              <label for="regionFilterSelect">Filter by Region:</label>
+          </div>
+          
+          <!-- Search and Filter Bar -->
+          <div class="search-filter-bar">
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input type="text" id="searchKeyword" placeholder="Search by job title, company, or skills... (e.g., Developer, Java, Marketing)" />
+              <button id="clearSearchBtn" class="clear-search-btn" style="display: none;">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <div class="filter-box">
+              <i class="fas fa-map-marker-alt"></i>
               <select id="regionFilterSelect">
                 <option value="all">🌍 All Regions</option>
                 <option value="Yaoundé">📌 Yaoundé</option>
@@ -88,6 +98,10 @@
               </select>
             </div>
           </div>
+          
+          <!-- Active Filters Display -->
+          <div id="activeFilters" class="active-filters"></div>
+          
           <div id="jobCardsContainer" class="job-grid">
             <div class="empty-state"><i class="fas fa-spinner fa-pulse"></i><p>Loading opportunities...</p></div>
           </div>

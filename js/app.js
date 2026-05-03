@@ -51,7 +51,39 @@ document.addEventListener("DOMContentLoaded", function() {
       document.getElementById("loginEmail").value = "";
       document.getElementById("loginPassword").value = "";
       currentUserRole = null;
+      currentSearchKeyword = "";
+      currentRegionFilter = "all";
       showToast("Logged out successfully", "#1e2a36");
+    });
+  }
+  
+  // Search Input Event (live search with debounce)
+  const searchInput = document.getElementById("searchKeyword");
+  if (searchInput) {
+    let debounceTimer;
+    searchInput.addEventListener("input", function(e) {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(function() {
+        if (currentUserRole === "student") {
+          renderStudentFeed(currentRegionFilter);
+        }
+      }, 300);
+    });
+  }
+  
+  // Clear Search Button
+  const clearSearchBtn = document.getElementById("clearSearchBtn");
+  if (clearSearchBtn) {
+    clearSearchBtn.addEventListener("click", function() {
+      if (searchInput) {
+        searchInput.value = "";
+        currentSearchKeyword = "";
+        clearSearchBtn.style.display = "none";
+        if (currentUserRole === "student") {
+          renderStudentFeed(currentRegionFilter);
+        }
+        showToast("Search cleared", "#1e2a36");
+      }
     });
   }
   
@@ -60,7 +92,8 @@ document.addEventListener("DOMContentLoaded", function() {
   if (regionFilter) {
     regionFilter.addEventListener("change", function(e) {
       if (currentUserRole === "student") {
-        renderStudentFeed(e.target.value);
+        currentRegionFilter = e.target.value;
+        renderStudentFeed(currentRegionFilter);
       }
     });
   }
