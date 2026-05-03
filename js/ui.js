@@ -1,7 +1,22 @@
 // UI Rendering Functions
+function filterJobsBySearch(jobs, keyword) {
+  if (!keyword || keyword.trim() === "") return jobs;
+  
+  const lowerKeyword = keyword.toLowerCase().trim();
+  
+  return jobs.filter(function(job) {
+    return job.title.toLowerCase().includes(lowerKeyword) ||
+           job.companyName.toLowerCase().includes(lowerKeyword) ||
+           job.description.toLowerCase().includes(lowerKeyword);
+  });
+}
+
 function renderStudentFeed(regionFilter) {
   const container = document.getElementById("jobCardsContainer");
   if (!container) return;
+  
+  currentRegionFilter = regionFilter;
+  updateActiveFilters();
   
   let filteredJobs = jobListings.filter(function(job) { return job.is_active === true; });
   
@@ -11,12 +26,40 @@ function renderStudentFeed(regionFilter) {
     });
   }
   
+  const searchInput = document.getElementById("searchKeyword");
+  if (searchInput) {
+    currentSearchKeyword = searchInput.value;
+    filteredJobs = filterJobsBySearch(filteredJobs, currentSearchKeyword);
+  }
+  
+  const clearBtn = document.getElementById("clearSearchBtn");
+  if (clearBtn) {
+    clearBtn.style.display = currentSearchKeyword ? "block" : "none";
+  }
+  
   if (filteredJobs.length === 0) {
-    container.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><p>No opportunities found in ' + (regionFilter === "all" ? "your region" : regionFilter) + '.</p></div>';
+    let message = '<div class="empty-state" aria-live="polite"><i class="fas fa-search" aria-hidden="true"></i>';
+    
+    if (currentSearchKeyword && regionFilter !== "all") {
+      message += '<p>No jobs found matching "<strong>' + escapeHtml(currentSearchKeyword) + '</strong>" in <strong>' + regionFilter + '</strong>.</p>';
+    } else if (currentSearchKeyword) {
+      message += '<p>No jobs found matching "<strong>' + escapeHtml(currentSearchKeyword) + '</strong>".</p>';
+    } else if (regionFilter !== "all") {
+      message += '<p>No opportunities found in ' + regionFilter + '.</p>';
+    } else {
+      message += '<p>No opportunities available at the moment.</p>';
+    }
+    
+    message += '</div>';
+    container.innerHTML = message;
     return;
   }
   
   container.innerHTML = filteredJobs.map(function(job) {
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+>>>>>>> Stashed changes
     var hasApplied = applications.some(function(app) {
       return app.job_id === job.job_id && app.student_email === "student@example.com";
     });
@@ -33,6 +76,20 @@ function renderStudentFeed(regionFilter) {
       '<div><span class="badge">' + job.job_type + '</span></div>' +
       '<div class="apply-section">' + applyButton + '</div>' +
       '<hr /><div style="font-size:0.75rem; color:#3b7a95;"><i class="far fa-calendar-alt"></i> Posted: ' + new Date(job.posted_at).toLocaleDateString() + '</div>' +
+=======
+    const highlightedTitle = currentSearchKeyword ? highlightText(job.title, currentSearchKeyword) : escapeHtml(job.title);
+    const highlightedCompany = currentSearchKeyword ? highlightText(job.companyName, currentSearchKeyword) : escapeHtml(job.companyName);
+    const highlightedDesc = currentSearchKeyword ? highlightText(job.description, currentSearchKeyword) : escapeHtml(job.description);
+    
+    return '<div class="job-card" role="article">' +
+      '<div class="job-title">' + highlightedTitle + '</div>' +
+      '<div class="company-name"><i class="fas fa-building" aria-hidden="true"></i> ' + highlightedCompany + '</div>' +
+      '<div class="job-location"><i class="fas fa-map-marker-alt" aria-hidden="true"></i> ' + escapeHtml(job.location) + '</div>' +
+      '<div class="job-desc">' + (highlightedDesc.length > 150 ? highlightedDesc.substring(0, 150) + "..." : highlightedDesc) + '</div>' +
+      '<div><span class="badge">' + job.job_type + '</span></div>' +
+      '<div class="apply-status"><i class="fas fa-check-circle" style="color:#2ecc71;" aria-hidden="true"></i> Status: Open • Apply Now</div>' +
+      '<hr /><div style="font-size:0.75rem; color:#3b7a95;"><i class="far fa-calendar-alt" aria-hidden="true"></i> Posted: ' + new Date(job.posted_at).toLocaleDateString() + '</div>' +
+>>>>>>> 1e33388549da540ee325cc9186ee4b7bd2a869ab
       '</div>';
   }).join("");
 }
@@ -221,12 +278,11 @@ function postNewJob(event) {
   jobTypeInput.value = "";
   
   var msgDiv = document.getElementById("postMessage");
-  if (msgDiv) msgDiv.innerHTML = '<span style="color:#27ae60;"><i class="fas fa-check-circle"></i> ✅ Job posted successfully! It now appears in the student feed.</span>';
-  showToast("🎉 Job listing published! Students can now see it.", "#27ae60");
+  if (msgDiv) msgDiv.innerHTML = '<span style="color:#27ae60;"><i class="fas fa-check-circle"></i> ✅ Job posted successfully!</span>';
+  showToast("🎉 Job listing published!", "#27ae60");
   
-  var regionSelect = document.getElementById("regionFilterSelect");
-  if (regionSelect && currentUserRole === "student") {
-    renderStudentFeed(regionSelect.value);
+  if (currentUserRole === "student") {
+    renderStudentFeed(currentRegionFilter);
   }
 }
 
@@ -266,9 +322,16 @@ function setRole(role) {
     studentPanel.style.display = "block";
     recruiterPanel.style.display = "none";
     if (roleLabelSpan) roleLabelSpan.innerHTML = "👩‍🎓 Student";
+<<<<<<< HEAD
     var filterSelect = document.getElementById("regionFilterSelect");
     if (filterSelect) renderStudentFeed(filterSelect.value);
     renderApplicationHistory();
+<<<<<<< Updated upstream
+=======
+=======
+    renderStudentFeed(currentRegionFilter);
+>>>>>>> 1e33388549da540ee325cc9186ee4b7bd2a869ab
+>>>>>>> Stashed changes
   } else {
     studentPanel.style.display = "none";
     recruiterPanel.style.display = "block";

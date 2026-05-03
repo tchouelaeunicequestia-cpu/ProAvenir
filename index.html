@@ -17,53 +17,80 @@
         <div class="login-subtitle">Connecting Cameroonian Youth & SMEs</div>
       </div>
       
-      <div class="role-selector" id="roleSelector">
-        <div class="role-option selected" data-role="student">
-          <i class="fas fa-graduation-cap"></i>
+      <div class="role-selector" id="roleSelector" role="tablist" aria-label="Select user role">
+        <div class="role-option selected" data-role="student" role="tab" aria-selected="true" tabindex="0">
+          <i class="fas fa-graduation-cap" aria-hidden="true"></i>
           <h3>Student</h3>
           <p>Find internships & jobs</p>
         </div>
-        <div class="role-option" data-role="recruiter">
-          <i class="fas fa-building"></i>
+        <div class="role-option" data-role="recruiter" role="tab" aria-selected="false" tabindex="0">
+          <i class="fas fa-building" aria-hidden="true"></i>
           <h3>Recruiter</h3>
           <p>Post job listings</p>
         </div>
       </div>
 
-      <form id="loginForm">
+      <form id="loginForm" aria-label="Login form">
         <div class="input-group">
-          <label><i class="fas fa-envelope"></i> Email Address</label>
-          <input type="email" id="loginEmail" placeholder="Enter your email" required>
+          <label for="loginEmail"><i class="fas fa-envelope" aria-hidden="true"></i> Email Address</label>
+          <input type="email" id="loginEmail" name="email" placeholder="Enter your email" required aria-required="true">
         </div>
         <div class="input-group">
-          <label><i class="fas fa-lock"></i> Password</label>
-          <input type="password" id="loginPassword" placeholder="Enter your password" required>
+          <label for="loginPassword"><i class="fas fa-lock" aria-hidden="true"></i> Password</label>
+          <input type="password" id="loginPassword" name="password" placeholder="Enter your password" required aria-required="true">
         </div>
-        <button type="submit" class="login-btn">Login as <span id="loginRoleText">Student</span></button>
+        <div class="forgot-password-link">
+          <a href="#" id="forgotPasswordLink" class="forgot-link">Forgot Password?</a>
+        </div>
+        <button type="submit" class="login-btn" aria-label="Login to your account">Login as <span id="loginRoleText">Student</span></button>
       </form>
 
-      <div class="demo-credentials">
+      <div class="demo-credentials" role="note" aria-label="Demo credentials information">
         <strong>Demo Credentials:</strong><br>
-        <strong>Student:</strong> student@example.com / any password<br>
-        <strong>Recruiter:</strong> recruiter@example.com / any password
+        <strong>Student:</strong> student@example.com / Student@123<br>
+        <strong>Recruiter:</strong> recruiter@example.com / Recruiter@123
+      </div>
+    </div>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div id="forgotPasswordModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-key"></i> Reset Password</h2>
+        <span class="close-modal" id="closeModalBtn">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p>Enter your email address and we'll send you a link to reset your password.</p>
+        <form id="forgotPasswordForm">
+          <div class="input-group">
+            <label for="resetEmail"><i class="fas fa-envelope"></i> Email Address</label>
+            <input type="email" id="resetEmail" placeholder="Enter your registered email" required>
+            <div class="error-msg" id="resetEmailError"></div>
+          </div>
+          <button type="submit" class="login-btn">Send Reset Link</button>
+        </form>
+        <div id="resetMessage" class="reset-message"></div>
       </div>
     </div>
   </div>
 
   <!-- Main Application -->
-  <div id="mainApp" class="main-app">
+  <div id="mainApp" class="main-app" style="display: none;">
     <div class="container">
       <div class="navbar">
         <div class="logo">
-          <i class="fas fa-briefcase" style="color: #0f5c7a;"></i>
+          <i class="fas fa-briefcase" aria-hidden="true"></i>
           Pro<span>Avenir</span>
         </div>
         <div class="user-info">
           <div class="role-badge">
-            <i class="fas fa-user-circle"></i> 
+            <i class="fas fa-user-circle" aria-hidden="true"></i> 
             <span id="userRoleLabel">Student</span>
           </div>
-          <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+          <button id="logoutBtn" class="logout-btn" aria-label="Logout from your account">
+            <i class="fas fa-sign-out-alt" aria-hidden="true"></i> Logout
+          </button>
         </div>
       </div>
 
@@ -71,25 +98,70 @@
         <!-- Student Panel -->
         <div id="studentPanel" class="card-panel">
           <div class="panel-header">
-            <h2><i class="fas fa-search-location"></i> Internships & Jobs near you</h2>
-            <div class="filter-bar">
-              <i class="fas fa-map-marker-alt" style="color: #0f5c7a;"></i>
-              <label for="regionFilterSelect">Filter by Region:</label>
-              <select id="regionFilterSelect">
+            <h2><i class="fas fa-search-location" aria-hidden="true"></i> Internships & Jobs near you</h2>
+          </div>
+          
+          <!-- Resume Upload Section -->
+          <div class="resume-section" id="resumeSection">
+            <div class="resume-header">
+              <h3><i class="fas fa-file-pdf"></i> My Resume/CV</h3>
+              <p>Upload your resume in PDF format (Max 5MB). Recruiters will be able to view and download it.</p>
+            </div>
+            <div class="resume-upload-area" id="resumeUploadArea">
+              <div class="resume-status" id="resumeStatus">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <span id="resumeFileName">No resume uploaded</span>
+              </div>
+              <div class="resume-actions">
+                <label for="resumeFile" class="btn-upload">
+                  <i class="fas fa-upload"></i> Choose PDF
+                  <input type="file" id="resumeFile" accept=".pdf" style="display: none;">
+                </label>
+                <button id="viewResumeBtn" class="btn-view" style="display: none;" disabled>
+                  <i class="fas fa-eye"></i> View/Download
+                </button>
+                <button id="deleteResumeBtn" class="btn-delete" style="display: none;">
+                  <i class="fas fa-trash"></i> Delete
+                </button>
+              </div>
+              <div id="uploadProgress" class="upload-progress" style="display: none;">
+                <div class="progress-bar"></div>
+                <span>Uploading...</span>
+              </div>
+            </div>
+            <div id="resumeMessage" class="resume-message"></div>
+          </div>
+          
+          <div class="search-filter-bar" role="search" aria-label="Job search and filters">
+            <div class="search-box">
+              <i class="fas fa-search" aria-hidden="true"></i>
+              <input type="text" id="searchKeyword" placeholder="Search by job title, company, or skills..." 
+                     aria-label="Search jobs by keyword" />
+              <button id="clearSearchBtn" class="clear-search-btn" style="display: none;" aria-label="Clear search">
+                <i class="fas fa-times" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="filter-box">
+              <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+              <label for="regionFilterSelect" class="visually-hidden">Filter by Region:</label>
+              <select id="regionFilterSelect" aria-label="Filter jobs by region" title="Select region to filter jobs">
                 <option value="all">🌍 All Regions</option>
                 <option value="Yaoundé">📌 Yaoundé</option>
                 <option value="Douala">⚓ Douala</option>
-                <option value="Nairobi">🌍 Nairobi</option>
-                <option value="Lagos">🏙️ Lagos</option>
-                <option value="Paris">🗼 Paris</option>
                 <option value="Remote">💻 Remote</option>
                 <option value="Central Africa">🌴 Central Africa</option>
                 <option value="West Africa">🌊 West Africa</option>
               </select>
             </div>
           </div>
-          <div id="jobCardsContainer" class="job-grid">
-            <div class="empty-state"><i class="fas fa-spinner fa-pulse"></i><p>Loading opportunities...</p></div>
+          
+          <div id="activeFilters" class="active-filters" aria-live="polite" aria-label="Active filters"></div>
+          
+          <div id="jobCardsContainer" class="job-grid" aria-label="Job listings">
+            <div class="empty-state" aria-live="polite">
+              <i class="fas fa-spinner fa-pulse" aria-hidden="true"></i>
+              <p>Loading opportunities...</p>
+            </div>
           </div>
           <div id="applicationDashboardContainer" class="application-dashboard-container"></div>
         </div>
@@ -97,44 +169,63 @@
         <!-- Recruiter Panel -->
         <div id="recruiterPanel" class="card-panel" style="display: none;">
           <div class="panel-header">
-            <h2><i class="fas fa-plus-circle"></i> Post a new job / internship</h2>
-            <span class="badge"><i class="fas fa-rocket"></i> Quick & Easy</span>
+            <h2><i class="fas fa-users" aria-hidden="true"></i> Student Applications</h2>
+            <span class="badge"><i class="fas fa-file-pdf"></i> View Resumes</span>
           </div>
-          <form id="jobPostForm">
+          
+          <div id="studentsListContainer" class="students-list">
+            <div class="empty-state">
+              <i class="fas fa-users"></i>
+              <p>Loading students...</p>
+            </div>
+          </div>
+          
+          <div class="panel-header" style="margin-top: 2rem;">
+            <h2><i class="fas fa-plus-circle" aria-hidden="true"></i> Post a new job / internship</h2>
+            <span class="badge"><i class="fas fa-rocket" aria-hidden="true"></i> Quick & Easy</span>
+          </div>
+          <form id="jobPostForm" aria-label="Post a new job listing">
             <div class="form-group">
-              <label>Job Title *</label>
-              <input type="text" id="jobTitle" placeholder="e.g., Frontend Developer Intern" />
-              <div class="error-msg" id="titleError"></div>
+              <label for="jobTitle"><i class="fas fa-heading" aria-hidden="true"></i> Job Title *</label>
+              <input type="text" id="jobTitle" placeholder="e.g., Frontend Developer Intern" aria-required="true" />
+              <div class="error-msg" id="titleError" role="alert"></div>
             </div>
             <div class="form-group">
-              <label>Company Name *</label>
-              <input type="text" id="companyName" placeholder="e.g., TechCorp Africa" />
-              <div class="error-msg" id="companyError"></div>
+              <label for="companyName"><i class="fas fa-building" aria-hidden="true"></i> Company Name *</label>
+              <input type="text" id="companyName" placeholder="e.g., TechCorp Africa" aria-required="true" />
+              <div class="error-msg" id="companyError" role="alert"></div>
             </div>
             <div class="form-group">
-              <label>Location * (Region / City)</label>
-              <input type="text" id="jobLocation" placeholder="e.g., Yaoundé, Douala, Remote" />
-              <div class="error-msg" id="locationError"></div>
+              <label for="jobLocation"><i class="fas fa-map-marker-alt" aria-hidden="true"></i> Location *</label>
+              <input type="text" id="jobLocation" placeholder="e.g., Yaoundé, Douala, Remote" aria-required="true" />
+              <div class="error-msg" id="locationError" role="alert"></div>
             </div>
             <div class="form-group">
-              <label>Requirements / Description *</label>
-              <textarea rows="4" id="jobDesc" placeholder="Describe the mission, required skills, experience..."></textarea>
-              <div class="error-msg" id="descError"></div>
+              <label for="jobDesc"><i class="fas fa-file-alt" aria-hidden="true"></i> Requirements / Description *</label>
+              <textarea rows="4" id="jobDesc" placeholder="Describe the mission, required skills, experience..." aria-required="true"></textarea>
+              <div class="error-msg" id="descError" role="alert"></div>
             </div>
             <div class="form-group">
-              <label>Job Type (optional)</label>
+              <label for="jobType"><i class="fas fa-briefcase" aria-hidden="true"></i> Job Type (optional)</label>
               <input type="text" id="jobType" placeholder="Internship / Full-Time / Part-Time / Contract" />
             </div>
-            <button type="submit" class="btn btn-primary" style="width: auto; padding: 0.8rem 2rem;">
-              <i class="fas fa-paper-plane"></i> Publish Listing
+            <button type="submit" class="btn btn-primary" style="width: auto; padding: 0.8rem 2rem;" aria-label="Publish job listing">
+              <i class="fas fa-paper-plane" aria-hidden="true"></i> Publish Listing
             </button>
           </form>
+<<<<<<< HEAD
           <div id="postMessage" style="margin-top: 1.5rem;"></div>
           <div id="recruiterApplicantsContainer" class="recruiter-applicants-container"></div>
+<<<<<<< Updated upstream
+=======
+=======
+          <div id="postMessage" style="margin-top: 1.5rem;" role="status" aria-live="polite"></div>
+>>>>>>> 1e33388549da540ee325cc9186ee4b7bd2a869ab
+>>>>>>> Stashed changes
         </div>
       </div>
       <footer>
-        <i class="fas fa-database"></i> ProAvenir · Connecting Cameroonian youth with SMEs · Real-time job matching
+        <i class="fas fa-database" aria-hidden="true"></i> ProAvenir · Connecting Cameroonian youth with SMEs · Real-time job matching
       </footer>
     </div>
   </div>
@@ -143,5 +234,6 @@
   <script src="js/utils.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/resume.js"></script>
 </body>
 </html>
