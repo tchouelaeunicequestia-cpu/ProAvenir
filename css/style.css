@@ -12,6 +12,39 @@ body {
   min-height: 100vh;
 }
 
+.hidden {
+  display: none !important;
+}
+
+.logo i {
+  color: #0f5c7a;
+}
+
+.btn {
+  border: none;
+  border-radius: 1rem;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  width: auto;
+  padding: 0.8rem 2rem;
+  background: linear-gradient(135deg, #0f5c7a, #1e88a8);
+  color: white;
+  font-weight: 600;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(15,92,122,0.2);
+}
+
+.post-message {
+  margin-top: 1.5rem;
+}
+
 /* Accessibility - Visually hidden */
 .visually-hidden {
   position: absolute;
