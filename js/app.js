@@ -71,6 +71,51 @@ document.addEventListener("DOMContentLoaded", function() {
     jobPostForm.addEventListener("submit", postNewJob);
   }
   
+  // Apply button click handler
+  document.addEventListener("click", function(e) {
+    if (e.target.closest(".apply-btn") && !e.target.closest(".apply-btn").disabled) {
+      const button = e.target.closest(".apply-btn");
+      const jobId = parseInt(button.getAttribute("data-job-id"), 10);
+      if (!isNaN(jobId)) {
+        applyForJob(jobId, button);
+      }
+    }
+  });
+
+  document.addEventListener("change", function(e) {
+    if (e.target.matches(".status-select")) {
+      const select = e.target;
+      const applicationId = parseInt(select.getAttribute("data-application-id"), 10);
+      const newStatus = select.value;
+      if (!isNaN(applicationId) && newStatus) {
+        updateApplicationStatus(applicationId, newStatus);
+      }
+    }
+  });
+  
   // Initial render
   renderStudentFeed("all");
+  renderApplicationHistory();
 });
+
+function updateApplicationStatus(applicationId, newStatus) {
+  const application = applications.find(function(app) {
+    return app.application_id === applicationId;
+  });
+  if (!application) {
+    showToast("Unable to update application status.", "#e74c3c");
+    return;
+  }
+
+  showToast("Saving applicant status...", "#3498db");
+  setTimeout(function() {
+    application.status = newStatus;
+    showToast("Status updated to " + newStatus + ".", "#27ae60");
+    if (currentUserRole === "recruiter") {
+      renderRecruiterApplicants();
+    }
+    if (currentUserRole === "student") {
+      renderApplicationHistory();
+    }
+  }, 500);
+}

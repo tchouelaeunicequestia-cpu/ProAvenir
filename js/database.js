@@ -21,3 +21,22 @@ let jobListings = [
 
 let nextJobId = 200;
 let currentUserRole = null;
+
+// Mock Database - Student Profiles
+const studentProfiles = [
+  {
+    email: "student@example.com",
+    name: "Chantal Ngassa",
+    university: "University of Yaoundé I",
+    location: "Yaoundé",
+    skills: ["JavaScript", "UI Design", "Excel", "Communication"],
+    summary: "Ambitious business student with internship experience in digital marketing and product research."
+  }
+];
+
+// Mock Database - Student Applications
+let applications = [
+  // Example record: { application_id: 1, job_id: 101, student_email: "student@example.com", applied_at: "2026-05-03", status: "Applied" }
+];
+
+let nextApplicationId = 1;
