@@ -1,10 +1,27 @@
+// server.ts
 import express from 'express';
+import './db'; 
+import adminRoutes from './routes/adminRoutes';
+
+// 1. Import your clean Route files
+import authRoutes from './routes/authRoutes';
+import jobRoutes from './routes/jobRoutes';
+import applicationRoutes from './routes/applicationRoutes';
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
+
+app.use(express.json());
+
+
+// 2. Connect the URLs to the route files
+app.use('/api/auth', authRoutes);
+app.use('/api/jobs', jobRoutes);
+app.use('/api/applications', applicationRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.get('/', (req, res) => {
-    res.send("ProAvenir Backend is officially running!");
+    res.send("ProAvenir API is running with clean architecture!");
 });
 
 app.listen(PORT, () => {
