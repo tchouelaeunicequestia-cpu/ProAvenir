@@ -6,19 +6,44 @@ if (!localStorage.getItem('users')) {
       email: "student@example.com", 
       password: "Student@123", 
       role: "student",
-      name: "Student User",
-      createdAt: new Date().toISOString()
+      name: "John Doe",
+      createdAt: new Date().toISOString(),
+      isBanned: false,
+      banReason: null,
+      bannedAt: null,
+      bannedBy: null
     },
     { 
       id: 2, 
       email: "recruiter@example.com", 
       password: "Recruiter@123", 
       role: "recruiter",
-      name: "Recruiter User",
-      createdAt: new Date().toISOString()
+      name: "Jane Smith",
+      createdAt: new Date().toISOString(),
+      isBanned: false,
+      banReason: null,
+      bannedAt: null,
+      bannedBy: null
+    },
+    { 
+      id: 3, 
+      email: "admin@example.com", 
+      password: "Admin@123", 
+      role: "admin",
+      name: "Admin User",
+      createdAt: new Date().toISOString(),
+      isBanned: false,
+      banReason: null,
+      bannedAt: null,
+      bannedBy: null
     }
   ];
   localStorage.setItem('users', JSON.stringify(defaultUsers));
+}
+
+// Initialize ban history
+if (!localStorage.getItem('banHistory')) {
+  localStorage.setItem('banHistory', JSON.stringify([]));
 }
 
 // Initialize reset tokens storage
@@ -75,7 +100,6 @@ function generateResetToken(email) {
 }
 
 function sendResetEmail(email, token) {
-  // Simulate sending email
   const resetLink = `${window.location.origin}${window.location.pathname.replace(/[^/]*$/, '')}pages/reset-password.html?token=${token}`;
   
   console.log('=== PASSWORD RESET EMAIL (SIMULATED) ===');
@@ -84,7 +108,6 @@ function sendResetEmail(email, token) {
   console.log(`Body: Click the following link to reset your password (valid for 24 hours):\n${resetLink}`);
   console.log('=======================================');
   
-  // For demo, show the link in a dialog
   setTimeout(() => {
     const userConfirmed = confirm(`A password reset link has been generated for ${email}.\n\nClick OK to open the reset page.\n\nNote: In production, this would be sent to your email inbox.`);
     if (userConfirmed) {
@@ -93,4 +116,79 @@ function sendResetEmail(email, token) {
   }, 500);
   
   return resetLink;
+}
+
+// Ban user function
+function banUser(userId, reason, adminId) {
+  const users = JSON.parse(localStorage.getItem('users'));
+  const userIndex = users.findIndex(u => u.id === userId);
+  
+  if (userIndex === -1) return { success: false, message: "User not found" };
+  if (users[userIndex].role === 'admin') return { success: false, message: "Cannot ban an admin user" };
+  
+  const admin = users.find(u => u.id === adminId);
+  
+  users[userIndex].isBanned = true;
+  users[userIndex].banReason = reason;
+  users[userIndex].bannedAt = new Date().toISOString();
+  users[userIndex].bannedBy = admin ? admin.email : 'Unknown';
+  
+  localStorage.setItem('users', JSON.stringify(users));
+  
+  // Store ban history for auditing
+  const banHistory = JSON.parse(localStorage.getItem('banHistory') || '[]');
+  banHistory.push({
+    userId: userId,
+    userEmail: users[userIndex].email,
+    userName: users[userIndex].name,
+    reason: reason,
+    bannedBy: admin ? admin.email : 'Unknown',
+    bannedAt: new Date().toISOString(),
+    action: 'ban'
+  });
+  localStorage.setItem('banHistory', JSON.stringify(banHistory));
+  
+  return { success: true, message: "User banned successfully" };
+}
+
+// Unban user function
+function unbanUser(userId) {
+  const users = JSON.parse(localStorage.getItem('users'));
+  const userIndex = users.findIndex(u => u.id === userId);
+  
+  if (userIndex === -1) return { success: false, message: "User not found" };
+  
+  users[userIndex].isBanned = false;
+  users[userIndex].banReason = null;
+  users[userIndex].bannedAt = null;
+  users[userIndex].bannedBy = null;
+  
+  localStorage.setItem('users', JSON.stringify(users));
+  
+  // Store unban history
+  const banHistory = JSON.parse(localStorage.getItem('banHistory') || '[]');
+  banHistory.push({
+    userId: userId,
+    userEmail: users[userIndex].email,
+    userName: users[userIndex].name,
+    unbannedAt: new Date().toISOString(),
+    action: 'unban'
+  });
+  localStorage.setItem('banHistory', JSON.stringify(banHistory));
+  
+  return { success: true, message: "User unbanned successfully" };
+}
+
+// Check if user is banned
+function isUserBanned(email) {
+  const users = JSON.parse(localStorage.getItem('users'));
+  const user = users.find(u => u.email === email);
+  return user ? user.isBanned || false : false;
+}
+
+// Get ban reason
+function getBanReason(email) {
+  const users = JSON.parse(localStorage.getItem('users'));
+  const user = users.find(u => u.email === email);
+  return user ? user.banReason : null;
 }
