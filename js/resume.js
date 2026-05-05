@@ -1,4 +1,4 @@
-// Resume Management System (keep the same as previous implementation)
+// Resume Management System
 class ResumeManager {
   constructor() {
     this.studentId = null;
