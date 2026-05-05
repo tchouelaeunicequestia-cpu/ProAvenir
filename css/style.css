@@ -649,16 +649,17 @@ body {
 
 .detail-label {
   font-weight: 600;
-  width: 120px;
+  width: 140px;
   color: #2c5a6e;
 }
 
 .detail-value {
   flex: 1;
   color: #1a2c3e;
+  word-break: break-word;
 }
 
-/* Rest of existing CSS remains the same */
+/* Login Page Styles */
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -846,8 +847,10 @@ body {
   border-radius: 0.8rem;
   font-size: 0.8rem;
   text-align: center;
+  line-height: 1.6;
 }
 
+/* Modal Styles */
 .modal {
   position: fixed;
   z-index: 2000;
@@ -936,6 +939,7 @@ body {
   border: 1px solid #f5c6cb;
 }
 
+/* Main App Styles */
 .main-app {
   display: none;
 }
