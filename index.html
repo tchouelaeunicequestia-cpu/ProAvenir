@@ -28,6 +28,11 @@
           <h3>Recruiter</h3>
           <p>Post job listings</p>
         </div>
+        <div class="role-option" data-role="admin" role="tab" aria-selected="false" tabindex="0">
+          <i class="fas fa-shield-alt" aria-hidden="true"></i>
+          <h3>Admin</h3>
+          <p>Manage users & content</p>
+        </div>
       </div>
 
       <form id="loginForm" aria-label="Login form">
@@ -45,11 +50,12 @@
         <button type="submit" class="login-btn" aria-label="Login to your account">Login as <span id="loginRoleText">Student</span></button>
       </form>
 
-      <!-- <div class="demo-credentials" role="note" aria-label="Demo credentials information">
+      <div class="demo-credentials" role="note" aria-label="Demo credentials information">
         <strong>Demo Credentials:</strong><br>
         <strong>Student:</strong> student@example.com / Student@123<br>
-        <strong>Recruiter:</strong> recruiter@example.com / Recruiter@123
-      </div> -->
+        <strong>Recruiter:</strong> recruiter@example.com / Recruiter@123<br>
+        <strong>Admin:</strong> admin@example.com / Admin@123
+      </div>
     </div>
   </div>
 
@@ -71,6 +77,30 @@
           <button type="submit" class="login-btn">Send Reset Link</button>
         </form>
         <div id="resetMessage" class="reset-message"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ban User Modal -->
+  <div id="banUserModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="fas fa-ban"></i> Ban User</h2>
+        <span class="close-modal" id="closeBanModalBtn">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p>You are about to ban <strong id="banUserName"></strong></p>
+        <form id="banUserForm">
+          <div class="input-group">
+            <label for="banReason"><i class="fas fa-exclamation-triangle"></i> Reason for Ban *</label>
+            <textarea id="banReason" rows="4" placeholder="Provide detailed reason for banning this user..." required></textarea>
+            <div class="error-msg" id="banReasonError"></div>
+          </div>
+          <div class="ban-actions">
+            <button type="button" class="btn-secondary" id="cancelBanBtn">Cancel</button>
+            <button type="submit" class="btn-danger">Confirm Ban</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -214,6 +244,63 @@
           </form>
           <div id="postMessage" style="margin-top: 1.5rem;" role="status" aria-live="polite"></div>
         </div>
+
+        <!-- Admin Panel -->
+        <div id="adminPanel" class="card-panel" style="display: none;">
+          <div class="panel-header">
+            <h2><i class="fas fa-users-cog"></i> User Management</h2>
+            <span class="badge"><i class="fas fa-shield-alt"></i> Admin Controls</span>
+          </div>
+          
+          <div class="admin-stats">
+            <div class="stat-card">
+              <i class="fas fa-users"></i>
+              <div class="stat-info">
+                <span class="stat-value" id="totalUsers">0</span>
+                <span class="stat-label">Total Users</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <i class="fas fa-graduation-cap"></i>
+              <div class="stat-info">
+                <span class="stat-value" id="totalStudents">0</span>
+                <span class="stat-label">Students</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <i class="fas fa-building"></i>
+              <div class="stat-info">
+                <span class="stat-value" id="totalRecruiters">0</span>
+                <span class="stat-label">Recruiters</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <i class="fas fa-ban"></i>
+              <div class="stat-info">
+                <span class="stat-value" id="totalBanned">0</span>
+                <span class="stat-label">Banned Users</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="user-filters">
+            <input type="text" id="userSearchInput" placeholder="Search by name or email..." class="search-input">
+            <select id="userRoleFilter" class="role-filter">
+              <option value="all">All Roles</option>
+              <option value="student">Students</option>
+              <option value="recruiter">Recruiters</option>
+              <option value="admin">Admins</option>
+              <option value="banned">Banned Users</option>
+            </select>
+          </div>
+          
+          <div id="usersListContainer" class="users-list">
+            <div class="empty-state">
+              <i class="fas fa-spinner fa-pulse"></i>
+              <p>Loading users...</p>
+            </div>
+          </div>
+        </div>
       </div>
       <footer>
         <i class="fas fa-database" aria-hidden="true"></i> ProAvenir · Connecting Cameroonian youth with SMEs · Real-time job matching
@@ -224,7 +311,8 @@
   <script src="js/database.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/ui.js"></script>
-  <script src="js/app.js"></script>
   <script src="js/resume.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
