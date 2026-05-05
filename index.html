@@ -105,6 +105,20 @@
     </div>
   </div>
 
+  <!-- Company Details Modal -->
+  <div id="companyDetailsModal" class="modal" style="display: none;">
+    <div class="modal-content modal-large">
+      <div class="modal-header">
+        <h2><i class="fas fa-building"></i> Company Registration Details</h2>
+        <span class="close-modal" id="closeCompanyModalBtn">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div id="companyDetailsContent"></div>
+        <div class="company-actions" id="companyModalActions"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- Main Application -->
   <div id="mainApp" class="main-app" style="display: none;">
     <div class="container">
@@ -247,57 +261,104 @@
 
         <!-- Admin Panel -->
         <div id="adminPanel" class="card-panel" style="display: none;">
-          <div class="panel-header">
-            <h2><i class="fas fa-users-cog"></i> User Management</h2>
-            <span class="badge"><i class="fas fa-shield-alt"></i> Admin Controls</span>
+          <!-- Admin Tabs -->
+          <div class="admin-tabs">
+            <button class="tab-btn active" data-tab="users">User Management</button>
+            <button class="tab-btn" data-tab="companies">Company Approval</button>
           </div>
           
-          <div class="admin-stats">
-            <div class="stat-card">
-              <i class="fas fa-users"></i>
-              <div class="stat-info">
-                <span class="stat-value" id="totalUsers">0</span>
-                <span class="stat-label">Total Users</span>
+          <!-- User Management Tab -->
+          <div id="usersTab" class="tab-content active">
+            <div class="admin-stats">
+              <div class="stat-card">
+                <i class="fas fa-users"></i>
+                <div class="stat-info">
+                  <span class="stat-value" id="totalUsers">0</span>
+                  <span class="stat-label">Total Users</span>
+                </div>
+              </div>
+              <div class="stat-card">
+                <i class="fas fa-graduation-cap"></i>
+                <div class="stat-info">
+                  <span class="stat-value" id="totalStudents">0</span>
+                  <span class="stat-label">Students</span>
+                </div>
+              </div>
+              <div class="stat-card">
+                <i class="fas fa-building"></i>
+                <div class="stat-info">
+                  <span class="stat-value" id="totalRecruiters">0</span>
+                  <span class="stat-label">Recruiters</span>
+                </div>
+              </div>
+              <div class="stat-card">
+                <i class="fas fa-ban"></i>
+                <div class="stat-info">
+                  <span class="stat-value" id="totalBanned">0</span>
+                  <span class="stat-label">Banned Users</span>
+                </div>
               </div>
             </div>
-            <div class="stat-card">
-              <i class="fas fa-graduation-cap"></i>
-              <div class="stat-info">
-                <span class="stat-value" id="totalStudents">0</span>
-                <span class="stat-label">Students</span>
-              </div>
+            
+            <div class="user-filters">
+              <input type="text" id="userSearchInput" placeholder="Search by name or email..." class="search-input">
+              <select id="userRoleFilter" class="role-filter">
+                <option value="all">All Roles</option>
+                <option value="student">Students</option>
+                <option value="recruiter">Recruiters</option>
+                <option value="admin">Admins</option>
+                <option value="banned">Banned Users</option>
+              </select>
             </div>
-            <div class="stat-card">
-              <i class="fas fa-building"></i>
-              <div class="stat-info">
-                <span class="stat-value" id="totalRecruiters">0</span>
-                <span class="stat-label">Recruiters</span>
-              </div>
-            </div>
-            <div class="stat-card">
-              <i class="fas fa-ban"></i>
-              <div class="stat-info">
-                <span class="stat-value" id="totalBanned">0</span>
-                <span class="stat-label">Banned Users</span>
+            
+            <div id="usersListContainer" class="users-list">
+              <div class="empty-state">
+                <i class="fas fa-spinner fa-pulse"></i>
+                <p>Loading users...</p>
               </div>
             </div>
           </div>
           
-          <div class="user-filters">
-            <input type="text" id="userSearchInput" placeholder="Search by name or email..." class="search-input">
-            <select id="userRoleFilter" class="role-filter">
-              <option value="all">All Roles</option>
-              <option value="student">Students</option>
-              <option value="recruiter">Recruiters</option>
-              <option value="admin">Admins</option>
-              <option value="banned">Banned Users</option>
-            </select>
-          </div>
-          
-          <div id="usersListContainer" class="users-list">
-            <div class="empty-state">
-              <i class="fas fa-spinner fa-pulse"></i>
-              <p>Loading users...</p>
+          <!-- Company Approval Tab -->
+          <div id="companiesTab" class="tab-content">
+            <div class="admin-stats">
+              <div class="stat-card">
+                <i class="fas fa-clock"></i>
+                <div class="stat-info">
+                  <span class="stat-value" id="pendingCompanies">0</span>
+                  <span class="stat-label">Pending Approval</span>
+                </div>
+              </div>
+              <div class="stat-card">
+                <i class="fas fa-check-circle"></i>
+                <div class="stat-info">
+                  <span class="stat-value" id="approvedCompanies">0</span>
+                  <span class="stat-label">Approved Companies</span>
+                </div>
+              </div>
+              <div class="stat-card">
+                <i class="fas fa-building"></i>
+                <div class="stat-info">
+                  <span class="stat-value" id="totalCompanies">0</span>
+                  <span class="stat-label">Total Companies</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="company-filters">
+              <input type="text" id="companySearchInput" placeholder="Search by company name..." class="search-input">
+              <select id="companyStatusFilter" class="role-filter">
+                <option value="pending">Pending Approval</option>
+                <option value="approved">Approved Companies</option>
+                <option value="all">All Companies</option>
+              </select>
+            </div>
+            
+            <div id="companiesListContainer" class="companies-list">
+              <div class="empty-state">
+                <i class="fas fa-spinner fa-pulse"></i>
+                <p>Loading companies...</p>
+              </div>
             </div>
           </div>
         </div>
@@ -313,6 +374,7 @@
   <script src="js/ui.js"></script>
   <script src="js/resume.js"></script>
   <script src="js/admin.js"></script>
+  <script src="js/company-admin.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
