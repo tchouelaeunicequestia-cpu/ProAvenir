@@ -5,6 +5,36 @@ function loadAdminPanel() {
   updateAdminStats();
   renderUsersList();
   setupAdminEventListeners();
+  setupAdminTabs();
+  
+  // Load company approval panel if on companies tab
+  if (typeof loadCompanyApprovalPanel === 'function') {
+    loadCompanyApprovalPanel();
+  }
+}
+
+function setupAdminTabs() {
+  const tabs = document.querySelectorAll('.tab-btn');
+  const contents = document.querySelectorAll('.tab-content');
+  
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const tabId = tab.getAttribute('data-tab');
+      
+      // Update active tab
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      
+      // Show corresponding content
+      contents.forEach(content => content.classList.remove('active'));
+      document.getElementById(`${tabId}Tab`).classList.add('active');
+      
+      // Refresh data if needed
+      if (tabId === 'companies' && typeof loadCompanyApprovalPanel === 'function') {
+        loadCompanyApprovalPanel();
+      }
+    });
+  });
 }
 
 function updateAdminStats() {
@@ -36,7 +66,7 @@ function renderUsersList() {
   if (currentAdminView.search) {
     const searchLower = currentAdminView.search.toLowerCase();
     users = users.filter(u => 
-      u.name.toLowerCase().includes(searchLower) || 
+      (u.name && u.name.toLowerCase().includes(searchLower)) || 
       u.email.toLowerCase().includes(searchLower)
     );
   }
@@ -172,22 +202,21 @@ function viewUserDetails(userId) {
   const banHistory = JSON.parse(localStorage.getItem('banHistory') || '[]');
   const userHistory = banHistory.filter(h => h.userId === userId);
   
-  let historyHtml = '';
+  let historyText = '';
   if (userHistory.length > 0) {
-    historyHtml = '<h4>Audit History:</h4><ul>';
+    historyText = '\n\nAudit History:\n';
     userHistory.forEach(h => {
       if (h.action === 'ban') {
-        historyHtml += `<li><strong>Banned:</strong> ${new Date(h.bannedAt).toLocaleString()} - Reason: ${escapeHtml(h.reason)} - By: ${escapeHtml(h.bannedBy)}</li>`;
+        historyText += `- Banned: ${new Date(h.bannedAt).toLocaleString()} - Reason: ${h.reason} - By: ${h.bannedBy}\n`;
       } else {
-        historyHtml += `<li><strong>Unbanned:</strong> ${new Date(h.unbannedAt).toLocaleString()}</li>`;
+        historyText += `- Unbanned: ${new Date(h.unbannedAt).toLocaleString()}\n`;
       }
     });
-    historyHtml += '</ul>';
   } else {
-    historyHtml = '<p>No audit history available.</p>';
+    historyText = '\n\nNo audit history available.';
   }
   
-  alert(`User Details:\n\nName: ${user.name}\nEmail: ${user.email}\nRole: ${user.role}\nStatus: ${user.isBanned ? 'Banned' : 'Active'}\n${user.isBanned ? `Ban Reason: ${user.banReason}\nBanned At: ${new Date(user.bannedAt).toLocaleString()}\nBanned By: ${user.bannedBy}` : ''}\n\n${historyHtml.replace(/<[^>]*>/g, '')}`);
+  alert(`User Details:\n\nName: ${user.name}\nEmail: ${user.email}\nRole: ${user.role}\nStatus: ${user.isBanned ? 'Banned' : 'Active'}\n${user.isBanned ? `\nBan Reason: ${user.banReason}\nBanned At: ${new Date(user.bannedAt).toLocaleString()}\nBanned By: ${user.bannedBy}` : ''}${historyText}`);
 }
 
 // Make functions global
@@ -196,3 +225,4 @@ window.closeBanModal = closeBanModal;
 window.confirmBanUser = confirmBanUser;
 window.unbanUserAccount = unbanUserAccount;
 window.viewUserDetails = viewUserDetails;
+window.loadAdminPanel = loadAdminPanel;

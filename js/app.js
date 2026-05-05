@@ -52,6 +52,9 @@ document.addEventListener("DOMContentLoaded", function() {
     if (e.target === document.getElementById('banUserModal')) {
       closeBanModal();
     }
+    if (e.target === document.getElementById('companyDetailsModal')) {
+      closeCompanyModal();
+    }
   });
   
   // Handle Forgot Password Form Submission
@@ -237,6 +240,12 @@ document.addEventListener("DOMContentLoaded", function() {
   const closeBanModalBtn = document.getElementById("closeBanModalBtn");
   if (closeBanModalBtn) {
     closeBanModalBtn.addEventListener("click", closeBanModal);
+  }
+  
+  // Company Modal Close Button
+  const closeCompanyModalBtn = document.getElementById("closeCompanyModalBtn");
+  if (closeCompanyModalBtn) {
+    closeCompanyModalBtn.addEventListener("click", closeCompanyModal);
   }
   
   // Initial render
