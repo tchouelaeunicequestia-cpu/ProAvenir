@@ -7,7 +7,6 @@ function loadAdminPanel() {
   setupAdminEventListeners();
   setupAdminTabs();
   
-  // Load company approval panel if on companies tab
   if (typeof loadCompanyApprovalPanel === 'function') {
     loadCompanyApprovalPanel();
   }
@@ -21,15 +20,12 @@ function setupAdminTabs() {
     tab.addEventListener('click', () => {
       const tabId = tab.getAttribute('data-tab');
       
-      // Update active tab
       tabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       
-      // Show corresponding content
       contents.forEach(content => content.classList.remove('active'));
       document.getElementById(`${tabId}Tab`).classList.add('active');
       
-      // Refresh data if needed
       if (tabId === 'companies' && typeof loadCompanyApprovalPanel === 'function') {
         loadCompanyApprovalPanel();
       }
@@ -53,7 +49,6 @@ function updateAdminStats() {
 function renderUsersList() {
   let users = JSON.parse(localStorage.getItem('users'));
   
-  // Apply filters
   if (currentAdminView.filter === 'banned') {
     users = users.filter(u => u.isBanned === true);
   } else if (currentAdminView.filter !== 'all') {
@@ -62,7 +57,6 @@ function renderUsersList() {
     users = users.filter(u => u.isBanned !== true);
   }
   
-  // Apply search
   if (currentAdminView.search) {
     const searchLower = currentAdminView.search.toLowerCase();
     users = users.filter(u => 
@@ -168,7 +162,6 @@ function confirmBanUser() {
     updateAdminStats();
     renderUsersList();
     
-    // Check if the banned user is currently logged in
     if (loggedInUser && loggedInUser.id === userToBan) {
       showToast('You have been banned. You will be logged out.', '#e74c3c');
       setTimeout(() => {
@@ -219,7 +212,6 @@ function viewUserDetails(userId) {
   alert(`User Details:\n\nName: ${user.name}\nEmail: ${user.email}\nRole: ${user.role}\nStatus: ${user.isBanned ? 'Banned' : 'Active'}\n${user.isBanned ? `\nBan Reason: ${user.banReason}\nBanned At: ${new Date(user.bannedAt).toLocaleString()}\nBanned By: ${user.bannedBy}` : ''}${historyText}`);
 }
 
-// Make functions global
 window.openBanModal = openBanModal;
 window.closeBanModal = closeBanModal;
 window.confirmBanUser = confirmBanUser;

@@ -13,22 +13,24 @@ function updateCompanyStats() {
   const approvedCompanies = companies.filter(c => c.status === 'approved').length;
   const totalCompanies = companies.length;
   
-  document.getElementById('pendingCompanies').textContent = pendingCompanies;
-  document.getElementById('approvedCompanies').textContent = approvedCompanies;
-  document.getElementById('totalCompanies').textContent = totalCompanies;
+  const pendingEl = document.getElementById('pendingCompanies');
+  const approvedEl = document.getElementById('approvedCompanies');
+  const totalEl = document.getElementById('totalCompanies');
+  
+  if (pendingEl) pendingEl.textContent = pendingCompanies;
+  if (approvedEl) approvedEl.textContent = approvedCompanies;
+  if (totalEl) totalEl.textContent = totalCompanies;
 }
 
 function renderCompaniesList() {
   let companies = JSON.parse(localStorage.getItem('companies') || '[]');
   
-  // Apply filters
   if (currentCompanyView.filter === 'pending') {
     companies = companies.filter(c => c.status === 'pending');
   } else if (currentCompanyView.filter === 'approved') {
     companies = companies.filter(c => c.status === 'approved');
   }
   
-  // Apply search
   if (currentCompanyView.search) {
     const searchLower = currentCompanyView.search.toLowerCase();
     companies = companies.filter(c => 
@@ -39,6 +41,7 @@ function renderCompaniesList() {
   }
   
   const container = document.getElementById('companiesListContainer');
+  if (!container) return;
   
   if (companies.length === 0) {
     container.innerHTML = '<div class="empty-state"><i class="fas fa-building"></i><p>No companies found.</p></div>';
@@ -57,7 +60,7 @@ function renderCompaniesList() {
       <div class="company-details">
         <div><i class="fas fa-globe"></i> ${escapeHtml(company.website || 'N/A')}</div>
         <div><i class="fas fa-id-card"></i> Tax ID: ${escapeHtml(company.taxId || 'N/A')}</div>
-        <div><i class="fas fa-map-marker-alt"></i> ${escapeHtml(company.address || 'N/A')}</div>
+        <div><i class="fas fa-map-marker-alt"></i> ${escapeHtml(company.address ? company.address.substring(0, 50) : 'N/A')}${company.address && company.address.length > 50 ? '...' : ''}</div>
       </div>
       <div class="company-actions">
         <button class="btn-view-company" onclick="viewCompanyDetails(${company.id})">
@@ -105,7 +108,6 @@ function viewCompanyDetails(companyId) {
   
   if (!company) return;
   
-  // Get submitter info
   const users = JSON.parse(localStorage.getItem('users') || '[]');
   const submitter = users.find(u => u.id === company.submittedBy);
   
@@ -154,9 +156,9 @@ function viewCompanyDetails(companyId) {
       ${company.status === 'approved' ? `
         <div class="detail-row">
           <div class="detail-label">Approved By:</div>
-          <div class="detail-value">${escapeHtml(company.approvedBy === 3 ? 'Admin' : company.approvedBy)}</div>
+          <div class="detail-value">Admin</div>
         </div>
-        <div class="detail-row">
+                <div class="detail-row">
           <div class="detail-label">Approved At:</div>
           <div class="detail-value">${new Date(company.approvedAt).toLocaleString()}</div>
         </div>
@@ -170,20 +172,23 @@ function viewCompanyDetails(companyId) {
     </div>
   `;
   
-  document.getElementById('companyDetailsContent').innerHTML = detailsHtml;
+  const contentDiv = document.getElementById('companyDetailsContent');
+  if (contentDiv) contentDiv.innerHTML = detailsHtml;
   
   const actionsDiv = document.getElementById('companyModalActions');
-  if (company.status === 'pending') {
-    actionsDiv.innerHTML = `
-      <button class="btn-approve-company" onclick="approveCompany(${company.id}); closeCompanyModal();">
-        <i class="fas fa-check-circle"></i> Approve Company
-      </button>
-      <button class="btn-reject-company" onclick="rejectCompanyWithReason(${company.id}); closeCompanyModal();">
-        <i class="fas fa-times-circle"></i> Reject Company
-      </button>
-    `;
-  } else {
-    actionsDiv.innerHTML = `<button class="btn-secondary" onclick="closeCompanyModal()">Close</button>`;
+  if (actionsDiv) {
+    if (company.status === 'pending') {
+      actionsDiv.innerHTML = `
+        <button class="btn-approve-company" onclick="approveCompany(${company.id}); closeCompanyModal();">
+          <i class="fas fa-check-circle"></i> Approve Company
+        </button>
+        <button class="btn-reject-company" onclick="rejectCompanyWithReason(${company.id}); closeCompanyModal();">
+          <i class="fas fa-times-circle"></i> Reject Company
+        </button>
+      `;
+    } else {
+      actionsDiv.innerHTML = `<button class="btn-secondary" onclick="closeCompanyModal()">Close</button>`;
+    }
   }
   
   document.getElementById('companyDetailsModal').style.display = 'flex';
@@ -193,13 +198,12 @@ function closeCompanyModal() {
   document.getElementById('companyDetailsModal').style.display = 'none';
 }
 
-// Simulate sending email notification
 function sendApprovalEmail(companyEmail, companyName) {
   console.log('=== APPROVAL EMAIL SENT (SIMULATED) ===');
   console.log(`To: ${companyEmail}`);
   console.log(`Subject: Your Company "${companyName}" Has Been Approved on ProAvenir`);
   console.log(`Body: Congratulations! Your company "${companyName}" has been approved on the ProAvenir platform.`);
-    console.log(`You can now:
+  console.log(`You can now:
   - Post job listings
   - Review student applications
   - Access all recruiter features
@@ -207,7 +211,6 @@ function sendApprovalEmail(companyEmail, companyName) {
 Thank you for joining ProAvenir!
 =======================================`);
   
-  // Show notification to user
   showToast(`Approval email sent to ${companyEmail}`, "#27ae60");
 }
 
@@ -239,7 +242,6 @@ function approveCompany(companyId) {
     return;
   }
   
-  // Update company status to approved
   companies[companyIndex].status = "approved";
   companies[companyIndex].approvedAt = new Date().toISOString();
   companies[companyIndex].approvedBy = loggedInUser ? loggedInUser.id : 3;
@@ -248,7 +250,7 @@ function approveCompany(companyId) {
   localStorage.setItem('companies', JSON.stringify(companies));
   
   // Update companiesDb for job listings
-  companiesDb = companies.map(c => ({
+  window.companiesDb = companies.map(c => ({
     company_id: c.id,
     company_name: c.companyName,
     headquarters: c.address ? c.address.split(',')[0] : 'Yaoundé',
@@ -256,14 +258,11 @@ function approveCompany(companyId) {
     status: c.status
   }));
   
-  // Send confirmation email
   sendApprovalEmail(companies[companyIndex].email, companies[companyIndex].companyName);
   
-  // Refresh views
   updateCompanyStats();
   renderCompaniesList();
   
-  // Also refresh admin stats if visible
   if (typeof updateAdminStats === 'function') {
     updateAdminStats();
   }
@@ -287,7 +286,6 @@ function rejectCompanyWithReason(companyId) {
     return;
   }
   
-  // Update company status to rejected
   companies[companyIndex].status = "rejected";
   companies[companyIndex].rejectionReason = reason;
   companies[companyIndex].rejectedAt = new Date().toISOString();
@@ -295,10 +293,8 @@ function rejectCompanyWithReason(companyId) {
   
   localStorage.setItem('companies', JSON.stringify(companies));
   
-  // Send rejection email
   sendRejectionEmail(companies[companyIndex].email, companies[companyIndex].companyName, reason);
   
-  // Refresh views
   updateCompanyStats();
   renderCompaniesList();
   
@@ -309,7 +305,6 @@ function rejectCompany(companyId) {
   rejectCompanyWithReason(companyId);
 }
 
-// Make functions global
 window.viewCompanyDetails = viewCompanyDetails;
 window.approveCompany = approveCompany;
 window.rejectCompany = rejectCompany;
