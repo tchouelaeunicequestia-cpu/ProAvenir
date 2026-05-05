@@ -39,6 +39,15 @@ if (!localStorage.getItem('users')) {
     }
   ];
   localStorage.setItem('users', JSON.stringify(defaultUsers));
+} else {
+  // Fix existing admin password if needed
+  let users = JSON.parse(localStorage.getItem('users'));
+  const adminIndex = users.findIndex(u => u.email === "admin@example.com");
+  if (adminIndex !== -1 && users[adminIndex].password !== "Admin@123") {
+    users[adminIndex].password = "Admin@123";
+    localStorage.setItem('users', JSON.stringify(users));
+    console.log("Admin password fixed to: Admin@123");
+  }
 }
 
 // Initialize Companies in localStorage
@@ -53,8 +62,8 @@ if (!localStorage.getItem('companies')) {
       registrationNumber: "RC/BTA/2024/1234",
       address: "123 Main Street, Yaoundé, Cameroon",
       phone: "+237 612345678",
-      status: "approved", // pending, approved, rejected
-      submittedBy: 2, // recruiter user id
+      status: "approved",
+      submittedBy: 2,
       submittedAt: new Date().toISOString(),
       approvedAt: new Date().toISOString(),
       approvedBy: 3,
@@ -143,6 +152,11 @@ if (!localStorage.getItem('resetTokens')) {
   localStorage.setItem('resetTokens', JSON.stringify({}));
 }
 
+// Initialize student resumes storage
+if (!localStorage.getItem('studentResumes')) {
+  localStorage.setItem('studentResumes', JSON.stringify({}));
+}
+
 // Get users from localStorage
 let users = JSON.parse(localStorage.getItem('users'));
 
@@ -150,7 +164,7 @@ let users = JSON.parse(localStorage.getItem('users'));
 let companiesDb = JSON.parse(localStorage.getItem('companies')).map(c => ({
   company_id: c.id,
   company_name: c.companyName,
-  headquarters: c.address.split(',')[0] || 'Yaoundé',
+  headquarters: c.address ? c.address.split(',')[0] : 'Yaoundé',
   website: c.website,
   status: c.status
 }));
@@ -159,7 +173,9 @@ let companiesDb = JSON.parse(localStorage.getItem('companies')).map(c => ({
 let jobListings = [
   { job_id: 101, company_id: 1, companyName: "TechCorp Africa", title: "Software Engineer Intern", description: "Build web apps with React & Java, mentorship provided. Great opportunity for fresh graduates!", location: "Yaoundé", job_type: "Internship", posted_at: "2025-02-10", is_active: true },
   { job_id: 102, company_id: 2, companyName: "FinServe Ltd", title: "Junior Financial Analyst", description: "Support financial planning, strong Excel skills required. Great career growth.", location: "Douala", job_type: "Full-Time", posted_at: "2025-02-01", is_active: true },
-  { job_id: 103, company_id: 3, companyName: "GlobalSoft International", title: "UX Designer (Contract)", description: "Design user interfaces for global products. Remote work available.", location: "Remote", job_type: "Contract", posted_at: "2025-02-05", is_active: true }
+  { job_id: 103, company_id: 3, companyName: "GlobalSoft International", title: "UX Designer (Contract)", description: "Design user interfaces for global products. Remote work available.", location: "Remote", job_type: "Contract", posted_at: "2025-02-05", is_active: true },
+  { job_id: 104, company_id: 4, companyName: "Cameroon Digital Hub", title: "Frontend Developer Intern", description: "Work on real projects: HTML/CSS/JS, great learning environment with mentors.", location: "Yaoundé", job_type: "Internship", posted_at: "2025-02-18", is_active: true },
+  { job_id: 105, company_id: 5, companyName: "Green Energy Solutions", title: "Marketing Intern", description: "Help promote renewable energy solutions. Great for marketing students.", location: "Douala", job_type: "Internship", posted_at: "2025-02-12", is_active: true }
 ];
 
 let nextJobId = 200;
