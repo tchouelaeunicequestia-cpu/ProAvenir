@@ -1,4 +1,4 @@
-// Resume Management System
+// Resume Management System (keep the same as previous implementation)
 class ResumeManager {
   constructor() {
     this.studentId = null;
@@ -54,14 +54,12 @@ class ResumeManager {
     
     if (!file) return;
 
-    // AC 1: Only accept PDF files
     if (file.type !== 'application/pdf') {
       this.showMessage('❌ Only PDF files are allowed. Please select a PDF document.', 'error');
       event.target.value = '';
       return;
     }
 
-    // AC 2: File size restriction (max 5MB = 5 * 1024 * 1024 bytes)
     const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
       this.showMessage(`❌ File size exceeds 5MB limit. Your file is ${(file.size / (1024 * 1024)).toFixed(2)}MB.`, 'error');
@@ -69,10 +67,8 @@ class ResumeManager {
       return;
     }
 
-    // Show upload progress
     this.showUploadProgress(true);
 
-    // Simulate upload delay (for realism)
     setTimeout(() => {
       this.uploadResume(file);
     }, 1000);
@@ -84,7 +80,6 @@ class ResumeManager {
     reader.onload = (e) => {
       const base64Data = e.target.result;
       
-      // Save to localStorage
       const resumes = JSON.parse(localStorage.getItem('studentResumes') || '{}');
       resumes[this.studentId] = {
         fileName: file.name,
@@ -102,10 +97,8 @@ class ResumeManager {
       this.showMessage('✅ Resume uploaded successfully! Recruiters can now view it.', 'success');
       this.showUploadProgress(false);
       
-      // Clear file input
       document.getElementById('resumeFile').value = '';
       
-      // Refresh recruiter view if active
       if (typeof refreshStudentsList === 'function') {
         refreshStudentsList();
       }
@@ -125,12 +118,10 @@ class ResumeManager {
       return;
     }
 
-    // Open PDF in new tab
     const blob = this.base64ToBlob(this.resumeData.data, 'application/pdf');
     const url = URL.createObjectURL(blob);
     window.open(url, '_blank');
     
-    // Revoke URL after a delay to free memory
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
@@ -149,7 +140,6 @@ class ResumeManager {
       this.updateUI(null);
       this.showMessage('✅ Resume deleted successfully. You can upload a new one.', 'success');
       
-      // Refresh recruiter view
       if (typeof refreshStudentsList === 'function') {
         refreshStudentsList();
       }
@@ -227,16 +217,14 @@ class ResumeManager {
     return new Blob([byteArray], { type: mimeType });
   }
 
-  // Get resume for a specific student (used by recruiters)
   static getStudentResume(studentId) {
     const resumes = JSON.parse(localStorage.getItem('studentResumes') || '{}');
     return resumes[studentId] || null;
   }
 
-  // Get all students with resumes
   static getAllStudentsWithResumes() {
     const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const students = users.filter(u => u.role === 'student');
+    const students = users.filter(u => u.role === 'student' && !u.isBanned);
     const resumes = JSON.parse(localStorage.getItem('studentResumes') || '{}');
     
     return students.map(student => ({
@@ -247,10 +235,8 @@ class ResumeManager {
   }
 }
 
-// Initialize resume manager when student logs in
 let resumeManager = null;
 
-// Function to refresh students list for recruiter
 function refreshStudentsList() {
   const container = document.getElementById('studentsListContainer');
   if (!container) return;
@@ -258,7 +244,7 @@ function refreshStudentsList() {
   const students = ResumeManager.getAllStudentsWithResumes();
   
   if (students.length === 0) {
-    container.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>No students registered yet.</p></div>';
+    container.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>No active students found.</p></div>';
     return;
   }
   
@@ -285,7 +271,6 @@ function refreshStudentsList() {
   `).join('');
 }
 
-// Function for recruiters to download student resume
 function downloadStudentResume(studentId) {
   const resume = ResumeManager.getStudentResume(studentId);
   
@@ -294,7 +279,6 @@ function downloadStudentResume(studentId) {
     return;
   }
   
-  // Convert base64 to blob and download
   const byteCharacters = atob(resume.data.split(',')[1]);
   const byteNumbers = new Array(byteCharacters.length);
   for (let i = 0; i < byteCharacters.length; i++) {
@@ -303,7 +287,6 @@ function downloadStudentResume(studentId) {
   const byteArray = new Uint8Array(byteNumbers);
   const blob = new Blob([byteArray], { type: 'application/pdf' });
   
-  // Create download link
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -316,6 +299,5 @@ function downloadStudentResume(studentId) {
   showToast(`Downloading ${resume.fileName}`, '#27ae60');
 }
 
-// Make functions global for onclick handlers
 window.downloadStudentResume = downloadStudentResume;
 window.refreshStudentsList = refreshStudentsList;
