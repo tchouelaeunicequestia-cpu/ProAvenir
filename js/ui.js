@@ -112,7 +112,7 @@ function postNewJob(event) {
     companyId = existingCompany.company_id;
   } else {
     var newId = companiesDb.length + 10;
-    companiesDb.push({ company_id: newId, company_name: company, headquarters: locationVal, website: "" });
+    companiesDb.push({ company_id: newId, company_name: company, headquarters: locationVal, website: "", status: "pending" });
     companyId = newId;
   }
   
