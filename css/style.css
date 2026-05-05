@@ -63,8 +63,61 @@ body {
   background: #c0392b;
 }
 
+.btn-success {
+  padding: 0.6rem 1.2rem;
+  background: #27ae60;
+  color: white;
+  border-radius: 2rem;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-success:hover {
+  background: #219a52;
+}
+
 .post-message {
   margin-top: 1.5rem;
+}
+
+/* Admin Tabs */
+.admin-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #eef2f8;
+  padding-bottom: 0.5rem;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #6c8a9c;
+  transition: all 0.3s;
+  border-radius: 0.5rem;
+}
+
+.tab-btn:hover {
+  color: #0f5c7a;
+  background: #f0f4f8;
+}
+
+.tab-btn.active {
+  color: #0f5c7a;
+  background: linear-gradient(135deg, #e8f4f8, #dceef5);
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+  animation: fadeIn 0.3s ease-out;
 }
 
 /* Resume Section Styles */
@@ -230,14 +283,14 @@ body {
 }
 
 /* Students List Styles */
-.students-list {
+.students-list, .companies-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
 
-.student-card {
+.student-card, .company-card {
   background: white;
   border-radius: 1.5rem;
   padding: 1.5rem;
@@ -245,25 +298,60 @@ body {
   transition: all 0.3s;
 }
 
-.student-card:hover {
+.student-card:hover, .company-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 }
 
-.student-name {
+.student-name, .company-name {
   font-size: 1.1rem;
   font-weight: 700;
   color: #0b4f6c;
   margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
-.student-email {
+.company-status {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.company-status.pending {
+  background: #fef2e0;
+  color: #f39c12;
+}
+
+.company-status.approved {
+  background: #d4edda;
+  color: #27ae60;
+}
+
+.student-email, .company-email {
   font-size: 0.85rem;
   color: #6c8a9c;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
-.resume-info {
+.company-details {
+  font-size: 0.8rem;
+  color: #4a6272;
+  margin: 0.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.company-details i {
+  width: 1.2rem;
+  color: #0f5c7a;
+}
+
+.resume-info, .company-actions {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -287,9 +375,7 @@ body {
   color: #e74c3c;
 }
 
-.btn-download-resume {
-  background: #0f5c7a;
-  color: white;
+.btn-download-resume, .btn-view-company, .btn-approve-company, .btn-reject-company {
   padding: 0.4rem 1rem;
   border-radius: 2rem;
   text-decoration: none;
@@ -299,10 +385,44 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-download-resume {
+  background: #0f5c7a;
+  color: white;
 }
 
 .btn-download-resume:hover {
   background: #1e88a8;
+}
+
+.btn-view-company {
+  background: #3498db;
+  color: white;
+}
+
+.btn-view-company:hover {
+  background: #2980b9;
+}
+
+.btn-approve-company {
+  background: #27ae60;
+  color: white;
+}
+
+.btn-approve-company:hover {
+  background: #219a52;
+}
+
+.btn-reject-company {
+  background: #e74c3c;
+  color: white;
+}
+
+.btn-reject-company:hover {
+  background: #c0392b;
 }
 
 /* Admin Panel Styles */
@@ -344,7 +464,7 @@ body {
   color: #6c8a9c;
 }
 
-.user-filters {
+.user-filters, .company-filters {
   display: flex;
   gap: 1rem;
   margin-bottom: 1.5rem;
@@ -409,6 +529,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .user-name i {
@@ -454,7 +575,7 @@ body {
   margin-top: 0.3rem;
 }
 
-.user-actions {
+.user-actions, .company-actions-row {
   display: flex;
   gap: 0.5rem;
 }
@@ -504,6 +625,37 @@ body {
   gap: 1rem;
   justify-content: flex-end;
   margin-top: 1rem;
+}
+
+/* Modal Large */
+.modal-large {
+  max-width: 600px;
+  width: 90%;
+}
+
+.company-details-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.detail-row {
+  display: flex;
+  padding: 0.8rem;
+  background: #f8f9fa;
+  border-radius: 0.8rem;
+  border-left: 3px solid #0f5c7a;
+}
+
+.detail-label {
+  font-weight: 600;
+  width: 120px;
+  color: #2c5a6e;
+}
+
+.detail-value {
+  flex: 1;
+  color: #1a2c3e;
 }
 
 /* Rest of existing CSS remains the same */
@@ -1132,8 +1284,11 @@ footer {
   .modal-content { width: 95%; }
   .resume-upload-area { flex-direction: column; align-items: stretch; }
   .resume-actions { justify-content: center; }
-  .students-list { grid-template-columns: 1fr; }
+  .students-list, .companies-list { grid-template-columns: 1fr; }
   .admin-stats { grid-template-columns: 1fr; }
   .user-card { flex-direction: column; align-items: stretch; }
   .user-actions { justify-content: flex-start; }
+  .admin-tabs { flex-direction: column; }
+  .detail-row { flex-direction: column; }
+  .detail-label { width: auto; margin-bottom: 0.3rem; }
 }
