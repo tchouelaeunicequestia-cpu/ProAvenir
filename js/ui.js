@@ -148,17 +148,25 @@ function postNewJob(event) {
 function setRole(role) {
   var studentPanel = document.getElementById("studentPanel");
   var recruiterPanel = document.getElementById("recruiterPanel");
+  var adminPanel = document.getElementById("adminPanel");
   var roleLabelSpan = document.getElementById("userRoleLabel");
   
   if (role === "student") {
-    studentPanel.style.display = "block";
-    recruiterPanel.style.display = "none";
+    if (studentPanel) studentPanel.style.display = "block";
+    if (recruiterPanel) recruiterPanel.style.display = "none";
+    if (adminPanel) adminPanel.style.display = "none";
     if (roleLabelSpan) roleLabelSpan.innerHTML = "👩‍🎓 Student";
     renderStudentFeed(currentRegionFilter);
-  } else {
-    studentPanel.style.display = "none";
-    recruiterPanel.style.display = "block";
+  } else if (role === "recruiter") {
+    if (studentPanel) studentPanel.style.display = "none";
+    if (recruiterPanel) recruiterPanel.style.display = "block";
+    if (adminPanel) adminPanel.style.display = "none";
     if (roleLabelSpan) roleLabelSpan.innerHTML = "🏢 Recruiter";
     clearFormErrors();
+  } else if (role === "admin") {
+    if (studentPanel) studentPanel.style.display = "none";
+    if (recruiterPanel) recruiterPanel.style.display = "none";
+    if (adminPanel) adminPanel.style.display = "block";
+    if (roleLabelSpan) roleLabelSpan.innerHTML = "👨‍💼 Admin";
   }
 }
