@@ -41,6 +41,98 @@ if (!localStorage.getItem('users')) {
   localStorage.setItem('users', JSON.stringify(defaultUsers));
 }
 
+// Initialize Companies in localStorage
+if (!localStorage.getItem('companies')) {
+  const defaultCompanies = [
+    {
+      id: 1,
+      companyName: "TechCorp Africa",
+      email: "contact@techcorp.cm",
+      website: "https://techcorp.cm",
+      taxId: "TC-2024-001",
+      registrationNumber: "RC/BTA/2024/1234",
+      address: "123 Main Street, Yaoundé, Cameroon",
+      phone: "+237 612345678",
+      status: "approved", // pending, approved, rejected
+      submittedBy: 2, // recruiter user id
+      submittedAt: new Date().toISOString(),
+      approvedAt: new Date().toISOString(),
+      approvedBy: 3,
+      rejectionReason: null,
+      description: "Leading technology company providing software solutions across Africa."
+    },
+    {
+      id: 2,
+      companyName: "FinServe Ltd",
+      email: "info@finserve.cm",
+      website: "https://finserve.cm",
+      taxId: "FS-2024-002",
+      registrationNumber: "RC/BTA/2024/5678",
+      address: "45 Finance Street, Douala, Cameroon",
+      phone: "+237 698765432",
+      status: "approved",
+      submittedBy: 2,
+      submittedAt: new Date().toISOString(),
+      approvedAt: new Date().toISOString(),
+      approvedBy: 3,
+      rejectionReason: null,
+      description: "Financial services and banking solutions provider."
+    },
+    {
+      id: 3,
+      companyName: "GlobalSoft International",
+      email: "hello@globalsoft.io",
+      website: "https://globalsoft.io",
+      taxId: "GS-2024-003",
+      registrationNumber: "RC/BTA/2024/9012",
+      address: "789 Tech Park, Paris, France",
+      phone: "+33123456789",
+      status: "pending",
+      submittedBy: 2,
+      submittedAt: new Date().toISOString(),
+      approvedAt: null,
+      approvedBy: null,
+      rejectionReason: null,
+      description: "International software development company with global reach."
+    },
+    {
+      id: 4,
+      companyName: "Cameroon Digital Hub",
+      email: "info@cdh.cm",
+      website: "https://cdh.cm",
+      taxId: "CDH-2024-004",
+      registrationNumber: "RC/BTA/2024/3456",
+      address: "Digital City, Yaoundé, Cameroon",
+      phone: "+237 655443322",
+      status: "pending",
+      submittedBy: 2,
+      submittedAt: new Date().toISOString(),
+      approvedAt: null,
+      approvedBy: null,
+      rejectionReason: null,
+      description: "Digital innovation hub supporting local tech startups."
+    },
+    {
+      id: 5,
+      companyName: "Green Energy Solutions",
+      email: "contact@greenenergy.cm",
+      website: "https://greenenergy.cm",
+      taxId: "GE-2024-005",
+      registrationNumber: "RC/BTA/2024/7890",
+      address: "Energy Boulevard, Douala, Cameroon",
+      phone: "+237 677889900",
+      status: "pending",
+      submittedBy: 2,
+      submittedAt: new Date().toISOString(),
+      approvedAt: null,
+      approvedBy: null,
+      rejectionReason: null,
+      description: "Renewable energy solutions for businesses and homes."
+    }
+  ];
+  localStorage.setItem('companies', JSON.stringify(defaultCompanies));
+}
+
 // Initialize ban history
 if (!localStorage.getItem('banHistory')) {
   localStorage.setItem('banHistory', JSON.stringify([]));
@@ -54,25 +146,20 @@ if (!localStorage.getItem('resetTokens')) {
 // Get users from localStorage
 let users = JSON.parse(localStorage.getItem('users'));
 
-// Companies Database
-const companiesDb = [
-  { company_id: 1, company_name: "TechCorp Africa", headquarters: "Yaoundé", website: "https://techcorp.cm" },
-  { company_id: 2, company_name: "FinServe Ltd", headquarters: "Douala", website: "https://finserve.cm" },
-  { company_id: 3, company_name: "GlobalSoft", headquarters: "Paris", website: "https://globalsoft.io" },
-  { company_id: 4, company_name: "Cameroon Digital Hub", headquarters: "Yaoundé", website: "https://cdh.cm" },
-  { company_id: 5, company_name: "Entrepreneurs Without Borders", headquarters: "Douala", website: "#" }
-];
+// Companies Database (for job listings compatibility)
+let companiesDb = JSON.parse(localStorage.getItem('companies')).map(c => ({
+  company_id: c.id,
+  company_name: c.companyName,
+  headquarters: c.address.split(',')[0] || 'Yaoundé',
+  website: c.website,
+  status: c.status
+}));
 
 // Job Listings
 let jobListings = [
   { job_id: 101, company_id: 1, companyName: "TechCorp Africa", title: "Software Engineer Intern", description: "Build web apps with React & Java, mentorship provided. Great opportunity for fresh graduates!", location: "Yaoundé", job_type: "Internship", posted_at: "2025-02-10", is_active: true },
-  { job_id: 102, company_id: 1, companyName: "TechCorp Africa", title: "Data Analyst Intern", description: "Analyze business data, create dashboards. SQL knowledge a plus. Training provided.", location: "Douala", job_type: "Internship", posted_at: "2025-02-15", is_active: true },
-  { job_id: 103, company_id: 2, companyName: "FinServe Ltd", title: "Junior Financial Analyst", description: "Support financial planning, strong Excel skills required. Great career growth.", location: "Douala", job_type: "Full-Time", posted_at: "2025-02-01", is_active: true },
-  { job_id: 104, company_id: 3, companyName: "GlobalSoft", title: "UX Designer (Contract)", description: "Design user interfaces for global products. Remote work available.", location: "Remote", job_type: "Contract", posted_at: "2025-02-05", is_active: true },
-  { job_id: 105, company_id: 4, companyName: "Cameroon Digital Hub", title: "Frontend Developer Intern", description: "Work on real projects: HTML/CSS/JS, great learning environment with mentors.", location: "Yaoundé", job_type: "Internship", posted_at: "2025-02-18", is_active: true },
-  { job_id: 106, company_id: 5, companyName: "Entrepreneurs Without Borders", title: "Marketing & Communication Intern", description: "Assist social media & community events. Great for communication graduates.", location: "Douala", job_type: "Internship", posted_at: "2025-02-12", is_active: true },
-  { job_id: 107, company_id: 2, companyName: "FinServe Ltd", title: "Risk Management Trainee", description: "Learn risk assessment and compliance. Full training provided.", location: "Central Africa", job_type: "Internship", posted_at: "2025-02-14", is_active: true },
-  { job_id: 108, company_id: 3, companyName: "GlobalSoft", title: "Cloud Support Engineer", description: "AWS & Azure support, remote-friendly position. Experience with cloud platforms preferred.", location: "Remote", job_type: "Full-Time", posted_at: "2025-02-09", is_active: true }
+  { job_id: 102, company_id: 2, companyName: "FinServe Ltd", title: "Junior Financial Analyst", description: "Support financial planning, strong Excel skills required. Great career growth.", location: "Douala", job_type: "Full-Time", posted_at: "2025-02-01", is_active: true },
+  { job_id: 103, company_id: 3, companyName: "GlobalSoft International", title: "UX Designer (Contract)", description: "Design user interfaces for global products. Remote work available.", location: "Remote", job_type: "Contract", posted_at: "2025-02-05", is_active: true }
 ];
 
 let nextJobId = 200;
@@ -86,7 +173,7 @@ function generateResetToken(email) {
   const token = Math.random().toString(36).substring(2, 15) + 
                 Date.now().toString(36) +
                 Math.random().toString(36).substring(2, 8);
-  const expiresAt = Date.now() + (24 * 60 * 60 * 1000); // 24 hours
+  const expiresAt = Date.now() + (24 * 60 * 60 * 1000);
   
   let resetTokens = JSON.parse(localStorage.getItem('resetTokens') || '{}');
   resetTokens[token] = {
@@ -135,7 +222,6 @@ function banUser(userId, reason, adminId) {
   
   localStorage.setItem('users', JSON.stringify(users));
   
-  // Store ban history for auditing
   const banHistory = JSON.parse(localStorage.getItem('banHistory') || '[]');
   banHistory.push({
     userId: userId,
@@ -165,7 +251,6 @@ function unbanUser(userId) {
   
   localStorage.setItem('users', JSON.stringify(users));
   
-  // Store unban history
   const banHistory = JSON.parse(localStorage.getItem('banHistory') || '[]');
   banHistory.push({
     userId: userId,
