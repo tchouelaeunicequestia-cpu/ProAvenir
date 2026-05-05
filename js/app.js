@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function() {
       roleOptions.forEach(opt => opt.classList.remove("selected"));
       this.classList.add("selected");
       selectedRole = this.getAttribute("data-role");
-      loginRoleText.textContent = selectedRole === "student" ? "Student" : "Recruiter";
+      loginRoleText.textContent = selectedRole === "student" ? "Student" : selectedRole === "recruiter" ? "Recruiter" : "Admin";
     });
   });
   
@@ -48,6 +48,9 @@ document.addEventListener("DOMContentLoaded", function() {
       const resetMessage = document.getElementById("resetMessage");
       resetMessage.innerHTML = "";
       resetMessage.className = "reset-message";
+    }
+    if (e.target === document.getElementById('banUserModal')) {
+      closeBanModal();
     }
   });
   
@@ -98,7 +101,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
   
-  // Handle Login
+  // Handle Login with ban check
   const loginForm = document.getElementById("loginForm");
   if (loginForm) {
     loginForm.addEventListener("submit", function(e) {
@@ -108,6 +111,13 @@ document.addEventListener("DOMContentLoaded", function() {
       
       if (!email || !password) {
         showToast("Please enter email and password", "#e74c3c");
+        return;
+      }
+      
+      // Check if user is banned
+      if (isUserBanned(email)) {
+        const banReason = getBanReason(email);
+        showToast(`Your account has been banned. Reason: ${banReason || 'Violation of terms'}`, "#e74c3c");
         return;
       }
       
@@ -129,15 +139,16 @@ document.addEventListener("DOMContentLoaded", function() {
       
       if (currentUserRole === "student") {
         setRole("student");
-        // Initialize resume manager for student
         if (!resumeManager) {
           resumeManager = new ResumeManager();
         }
         resumeManager.setStudentId(user.id);
-      } else {
+      } else if (currentUserRole === "recruiter") {
         setRole("recruiter");
-        // Refresh students list for recruiter
         refreshStudentsList();
+      } else if (currentUserRole === "admin") {
+        setRole("admin");
+        loadAdminPanel();
       }
       
       document.getElementById("loginPage").style.display = "none";
@@ -209,6 +220,53 @@ document.addEventListener("DOMContentLoaded", function() {
     jobPostForm.addEventListener("submit", postNewJob);
   }
   
+  // Ban Modal Buttons
+  const cancelBanBtn = document.getElementById("cancelBanBtn");
+  if (cancelBanBtn) {
+    cancelBanBtn.addEventListener("click", closeBanModal);
+  }
+  
+  const banUserForm = document.getElementById("banUserForm");
+  if (banUserForm) {
+    banUserForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+      confirmBanUser();
+    });
+  }
+  
+  const closeBanModalBtn = document.getElementById("closeBanModalBtn");
+  if (closeBanModalBtn) {
+    closeBanModalBtn.addEventListener("click", closeBanModal);
+  }
+  
   // Initial render
   renderStudentFeed("all");
 });
+
+// Override setRole to include admin
+const originalSetRole = setRole;
+setRole = function(role) {
+  var studentPanel = document.getElementById("studentPanel");
+  var recruiterPanel = document.getElementById("recruiterPanel");
+  var adminPanel = document.getElementById("adminPanel");
+  var roleLabelSpan = document.getElementById("userRoleLabel");
+  
+  if (role === "student") {
+    if (studentPanel) studentPanel.style.display = "block";
+    if (recruiterPanel) recruiterPanel.style.display = "none";
+    if (adminPanel) adminPanel.style.display = "none";
+    if (roleLabelSpan) roleLabelSpan.innerHTML = "👩‍🎓 Student";
+    renderStudentFeed(currentRegionFilter);
+  } else if (role === "recruiter") {
+    if (studentPanel) studentPanel.style.display = "none";
+    if (recruiterPanel) recruiterPanel.style.display = "block";
+    if (adminPanel) adminPanel.style.display = "none";
+    if (roleLabelSpan) roleLabelSpan.innerHTML = "🏢 Recruiter";
+    clearFormErrors();
+  } else if (role === "admin") {
+    if (studentPanel) studentPanel.style.display = "none";
+    if (recruiterPanel) recruiterPanel.style.display = "none";
+    if (adminPanel) adminPanel.style.display = "block";
+    if (roleLabelSpan) roleLabelSpan.innerHTML = "👨‍💼 Admin";
+  }
+};
